@@ -1,0 +1,121 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ----------------------< com.complaint:redressal >-----------------------
+[INFO] Building complaint-redressal-system 0.0.1-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot-maven-plugin:2.7.18:run (default-cli) > test-compile @ redressal >>>
+[INFO] 
+[INFO] --- maven-resources-plugin:3.2.0:resources (default-resources) @ redressal ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Using 'UTF-8' encoding to copy filtered properties files.
+[INFO] Copying 1 resource
+[INFO] Copying 0 resource
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.10.1:compile (default-compile) @ redressal ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-resources-plugin:3.2.0:testResources (default-testResources) @ redressal ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Using 'UTF-8' encoding to copy filtered properties files.
+[INFO] skip non existing resourceDirectory D:\final\backend\src\test\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.10.1:testCompile (default-testCompile) @ redressal ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] <<< spring-boot-maven-plugin:2.7.18:run (default-cli) < test-compile @ redressal <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot-maven-plugin:2.7.18:run (default-cli) @ redressal ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::               (v2.7.18)
+
+2026-02-12 03:23:13.252  INFO 6316 --- [           main] c.c.r.ComplaintRedressalApplication      : Starting ComplaintRedressalApplication using Java 1.8.0_481 on DESKTOP-UVIULNA with PID 6316 (D:\final\backend\target\classes started by ELCOT in D:\final\backend)
+2026-02-12 03:23:13.255  INFO 6316 --- [           main] c.c.r.ComplaintRedressalApplication      : No active profile set, falling back to 1 default profile: "default"
+2026-02-12 03:23:14.015  INFO 6316 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-02-12 03:23:14.103  INFO 6316 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 69 ms. Found 5 JPA repository interfaces.
+2026-02-12 03:23:14.862  INFO 6316 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2026-02-12 03:23:14.878  INFO 6316 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-02-12 03:23:14.878  INFO 6316 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.83]
+2026-02-12 03:23:15.064  INFO 6316 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-02-12 03:23:15.064  INFO 6316 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1760 ms
+2026-02-12 03:23:15.223  INFO 6316 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-02-12 03:23:15.289  INFO 6316 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.6.15.Final
+2026-02-12 03:23:15.440  INFO 6316 --- [           main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2026-02-12 03:23:15.613  INFO 6316 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-02-12 03:23:16.096  INFO 6316 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-02-12 03:23:16.106  INFO 6316 --- [           main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL8Dialect
+2026-02-12 03:23:17.054  INFO 6316 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2026-02-12 03:23:17.062  INFO 6316 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-02-12 03:23:17.772  WARN 6316 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-02-12 03:23:17.976  INFO 6316 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@17034458, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@3e0e0ba7, org.springframework.security.web.context.SecurityContextPersistenceFilter@5ef591af, org.springframework.security.web.header.HeaderWriterFilter@253b1cbd, org.springframework.web.filter.CorsFilter@7df5549e, org.springframework.security.web.authentication.logout.LogoutFilter@59929ac, com.complaint.redressal.security.jwt.AuthTokenFilter@4fe4503a, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@71fb1da3, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@1ecec098, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@cbdc0f4, org.springframework.security.web.session.SessionManagementFilter@25435731, org.springframework.security.web.access.ExceptionTranslationFilter@26feccf7, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@6c8d638a]
+2026-02-12 03:23:18.178  INFO 6316 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2026-02-12 03:23:18.186  INFO 6316 --- [           main] c.c.r.ComplaintRedressalApplication      : Started ComplaintRedressalApplication in 5.335 seconds (JVM running for 5.715)
+2026-02-12 03:26:23.904  INFO 6316 --- [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-02-12 03:26:23.904  INFO 6316 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-02-12 03:26:23.904  INFO 6316 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+Hibernate: select user0_.id as col_0_0_ from users user0_ where user0_.username=? limit ?
+Hibernate: select user0_.id as col_0_0_ from users user0_ where user0_.email=? limit ?
+Hibernate: insert into users (email, full_name, mobile, password, username) values (?, ?, ?, ?, ?)
+Hibernate: select user0_.id as id1_4_, user0_.email as email2_4_, user0_.full_name as full_nam3_4_, user0_.mobile as mobile4_4_, user0_.password as password5_4_, user0_.username as username6_4_ from users user0_ where user0_.username=?
+Hibernate: select user0_.id as id1_4_, user0_.email as email2_4_, user0_.full_name as full_nam3_4_, user0_.mobile as mobile4_4_, user0_.password as password5_4_, user0_.username as username6_4_ from users user0_ where user0_.username=?
+Hibernate: select user0_.id as id1_4_0_, user0_.email as email2_4_0_, user0_.full_name as full_nam3_4_0_, user0_.mobile as mobile4_4_0_, user0_.password as password5_4_0_, user0_.username as username6_4_0_ from users user0_ where user0_.id=?
+Hibernate: select complaint0_.id as id1_1_, complaint0_.address as address2_1_, complaint0_.assigned_department_id as assigne12_1_, complaint0_.category as category3_1_, complaint0_.created_at as created_4_1_, complaint0_.description as descript5_1_, complaint0_.image_url as image_ur6_1_, complaint0_.latitude as latitude7_1_, complaint0_.longitude as longitud8_1_, complaint0_.status as status9_1_, complaint0_.title as title10_1_, complaint0_.updated_at as updated11_1_, complaint0_.user_id as user_id13_1_ from complaints complaint0_ where complaint0_.user_id=?
+Hibernate: select user0_.id as id1_4_, user0_.email as email2_4_, user0_.full_name as full_nam3_4_, user0_.mobile as mobile4_4_, user0_.password as password5_4_, user0_.username as username6_4_ from users user0_ where user0_.username=?
+Hibernate: select user0_.id as id1_4_0_, user0_.email as email2_4_0_, user0_.full_name as full_nam3_4_0_, user0_.mobile as mobile4_4_0_, user0_.password as password5_4_0_, user0_.username as username6_4_0_ from users user0_ where user0_.id=?
+Hibernate: select complaint0_.id as id1_1_, complaint0_.address as address2_1_, complaint0_.assigned_department_id as assigne12_1_, complaint0_.category as category3_1_, complaint0_.created_at as created_4_1_, complaint0_.description as descript5_1_, complaint0_.image_url as image_ur6_1_, complaint0_.latitude as latitude7_1_, complaint0_.longitude as longitud8_1_, complaint0_.status as status9_1_, complaint0_.title as title10_1_, complaint0_.updated_at as updated11_1_, complaint0_.user_id as user_id13_1_ from complaints complaint0_ where complaint0_.user_id=?
+Hibernate: select user0_.id as id1_4_, user0_.email as email2_4_, user0_.full_name as full_nam3_4_, user0_.mobile as mobile4_4_, user0_.password as password5_4_, user0_.username as username6_4_ from users user0_ where user0_.username=?
+Hibernate: select user0_.id as id1_4_0_, user0_.email as email2_4_0_, user0_.full_name as full_nam3_4_0_, user0_.mobile as mobile4_4_0_, user0_.password as password5_4_0_, user0_.username as username6_4_0_ from users user0_ where user0_.id=?
+Hibernate: select department0_.id as id1_2_, department0_.name as name2_2_ from departments department0_ where department0_.name=?
+Hibernate: insert into departments (name) values (?)
+Hibernate: insert into complaints (address, assigned_department_id, category, created_at, description, image_url, latitude, longitude, status, title, updated_at, user_id) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: select user0_.id as id1_4_, user0_.email as email2_4_, user0_.full_name as full_nam3_4_, user0_.mobile as mobile4_4_, user0_.password as password5_4_, user0_.username as username6_4_ from users user0_ where user0_.username=?
+Hibernate: select user0_.id as id1_4_0_, user0_.email as email2_4_0_, user0_.full_name as full_nam3_4_0_, user0_.mobile as mobile4_4_0_, user0_.password as password5_4_0_, user0_.username as username6_4_0_ from users user0_ where user0_.id=?
+Hibernate: select complaint0_.id as id1_1_, complaint0_.address as address2_1_, complaint0_.assigned_department_id as assigne12_1_, complaint0_.category as category3_1_, complaint0_.created_at as created_4_1_, complaint0_.description as descript5_1_, complaint0_.image_url as image_ur6_1_, complaint0_.latitude as latitude7_1_, complaint0_.longitude as longitud8_1_, complaint0_.status as status9_1_, complaint0_.title as title10_1_, complaint0_.updated_at as updated11_1_, complaint0_.user_id as user_id13_1_ from complaints complaint0_ where complaint0_.user_id=?
+Hibernate: select department0_.id as id1_2_0_, department0_.name as name2_2_0_ from departments department0_ where department0_.id=?
+Hibernate: select user0_.id as id1_4_, user0_.email as email2_4_, user0_.full_name as full_nam3_4_, user0_.mobile as mobile4_4_, user0_.password as password5_4_, user0_.username as username6_4_ from users user0_ where user0_.username=?
+Hibernate: select user0_.id as id1_4_0_, user0_.email as email2_4_0_, user0_.full_name as full_nam3_4_0_, user0_.mobile as mobile4_4_0_, user0_.password as password5_4_0_, user0_.username as username6_4_0_ from users user0_ where user0_.id=?
+Hibernate: select complaint0_.id as id1_1_, complaint0_.address as address2_1_, complaint0_.assigned_department_id as assigne12_1_, complaint0_.category as category3_1_, complaint0_.created_at as created_4_1_, complaint0_.description as descript5_1_, complaint0_.image_url as image_ur6_1_, complaint0_.latitude as latitude7_1_, complaint0_.longitude as longitud8_1_, complaint0_.status as status9_1_, complaint0_.title as title10_1_, complaint0_.updated_at as updated11_1_, complaint0_.user_id as user_id13_1_ from complaints complaint0_ where complaint0_.user_id=?
+Hibernate: select department0_.id as id1_2_0_, department0_.name as name2_2_0_ from departments department0_ where department0_.id=?
+Hibernate: select user0_.id as id1_4_, user0_.email as email2_4_, user0_.full_name as full_nam3_4_, user0_.mobile as mobile4_4_, user0_.password as password5_4_, user0_.username as username6_4_ from users user0_ where user0_.username=?
+Hibernate: select user0_.id as id1_4_, user0_.email as email2_4_, user0_.full_name as full_nam3_4_, user0_.mobile as mobile4_4_, user0_.password as password5_4_, user0_.username as username6_4_ from users user0_ where user0_.username=?
+Hibernate: select admin0_.id as id1_0_, admin0_.department_id as departme4_0_, admin0_.password as password2_0_, admin0_.username as username3_0_ from admins admin0_ where admin0_.username=?
+Hibernate: select user0_.id as id1_4_, user0_.email as email2_4_, user0_.full_name as full_nam3_4_, user0_.mobile as mobile4_4_, user0_.password as password5_4_, user0_.username as username6_4_ from users user0_ where user0_.username=?
+Hibernate: select user0_.id as id1_4_, user0_.email as email2_4_, user0_.full_name as full_nam3_4_, user0_.mobile as mobile4_4_, user0_.password as password5_4_, user0_.username as username6_4_ from users user0_ where user0_.username=?
+Hibernate: select user0_.id as id1_4_0_, user0_.email as email2_4_0_, user0_.full_name as full_nam3_4_0_, user0_.mobile as mobile4_4_0_, user0_.password as password5_4_0_, user0_.username as username6_4_0_ from users user0_ where user0_.id=?
+Hibernate: select complaint0_.id as id1_1_, complaint0_.address as address2_1_, complaint0_.assigned_department_id as assigne12_1_, complaint0_.category as category3_1_, complaint0_.created_at as created_4_1_, complaint0_.description as descript5_1_, complaint0_.image_url as image_ur6_1_, complaint0_.latitude as latitude7_1_, complaint0_.longitude as longitud8_1_, complaint0_.status as status9_1_, complaint0_.title as title10_1_, complaint0_.updated_at as updated11_1_, complaint0_.user_id as user_id13_1_ from complaints complaint0_ where complaint0_.user_id=?
+Hibernate: select department0_.id as id1_2_0_, department0_.name as name2_2_0_ from departments department0_ where department0_.id=?
+Hibernate: select user0_.id as id1_4_, user0_.email as email2_4_, user0_.full_name as full_nam3_4_, user0_.mobile as mobile4_4_, user0_.password as password5_4_, user0_.username as username6_4_ from users user0_ where user0_.username=?
+Hibernate: select user0_.id as id1_4_0_, user0_.email as email2_4_0_, user0_.full_name as full_nam3_4_0_, user0_.mobile as mobile4_4_0_, user0_.password as password5_4_0_, user0_.username as username6_4_0_ from users user0_ where user0_.id=?
+Hibernate: select complaint0_.id as id1_1_, complaint0_.address as address2_1_, complaint0_.assigned_department_id as assigne12_1_, complaint0_.category as category3_1_, complaint0_.created_at as created_4_1_, complaint0_.description as descript5_1_, complaint0_.image_url as image_ur6_1_, complaint0_.latitude as latitude7_1_, complaint0_.longitude as longitud8_1_, complaint0_.status as status9_1_, complaint0_.title as title10_1_, complaint0_.updated_at as updated11_1_, complaint0_.user_id as user_id13_1_ from complaints complaint0_ where complaint0_.user_id=?
+Hibernate: select department0_.id as id1_2_0_, department0_.name as name2_2_0_ from departments department0_ where department0_.id=?
+Hibernate: select user0_.id as id1_4_, user0_.email as email2_4_, user0_.full_name as full_nam3_4_, user0_.mobile as mobile4_4_, user0_.password as password5_4_, user0_.username as username6_4_ from users user0_ where user0_.username=?
+Hibernate: select admin0_.id as id1_0_, admin0_.department_id as departme4_0_, admin0_.password as password2_0_, admin0_.username as username3_0_ from admins admin0_ where admin0_.username=?
+Hibernate: select user0_.id as id1_4_, user0_.email as email2_4_, user0_.full_name as full_nam3_4_, user0_.mobile as mobile4_4_, user0_.password as password5_4_, user0_.username as username6_4_ from users user0_ where user0_.username=?
+Hibernate: select admin0_.id as id1_0_, admin0_.department_id as departme4_0_, admin0_.password as password2_0_, admin0_.username as username3_0_ from admins admin0_ where admin0_.username=?
+Hibernate: select user0_.id as id1_4_, user0_.email as email2_4_, user0_.full_name as full_nam3_4_, user0_.mobile as mobile4_4_, user0_.password as password5_4_, user0_.username as username6_4_ from users user0_ where user0_.username=?
+Hibernate: select admin0_.id as id1_0_, admin0_.department_id as departme4_0_, admin0_.password as password2_0_, admin0_.username as username3_0_ from admins admin0_ where admin0_.username=?
+Hibernate: select user0_.id as id1_4_, user0_.email as email2_4_, user0_.full_name as full_nam3_4_, user0_.mobile as mobile4_4_, user0_.password as password5_4_, user0_.username as username6_4_ from users user0_ where user0_.username=?
+Hibernate: select admin0_.id as id1_0_, admin0_.department_id as departme4_0_, admin0_.password as password2_0_, admin0_.username as username3_0_ from admins admin0_ where admin0_.username=?
+Hibernate: select user0_.id as id1_4_, user0_.email as email2_4_, user0_.full_name as full_nam3_4_, user0_.mobile as mobile4_4_, user0_.password as password5_4_, user0_.username as username6_4_ from users user0_ where user0_.username=?
+Hibernate: select admin0_.id as id1_0_, admin0_.department_id as departme4_0_, admin0_.password as password2_0_, admin0_.username as username3_0_ from admins admin0_ where admin0_.username=?
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  25:51 min
+[INFO] Finished at: 2026-02-12T03:49:01+05:30
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.springframework.boot:spring-boot-maven-plugin:2.7.18:run (default-cli) on project redressal: Application finished with exit code: 1 -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException

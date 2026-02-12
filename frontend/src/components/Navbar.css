@@ -1,0 +1,97 @@
+/* Navbar.css */
+.navbar {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 1rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.navbar-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.brand-logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #1e293b;
+    text-decoration: none;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.nav-item {
+    text-decoration: none;
+    color: #64748b;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: color 0.2s;
+}
+
+.nav-item:hover {
+    color: #2563eb;
+}
+
+.btn-nav {
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+}
+
+.btn-nav-primary {
+    background-color: #2563eb;
+    color: white;
+}
+
+.btn-nav-primary:hover {
+    background-color: #1d4ed8;
+    transform: translateY(-1px);
+}
+
+.btn-nav-secondary {
+    background-color: rgba(241, 245, 249, 0.8);
+    color: #475569;
+}
+
+.btn-nav-secondary:hover {
+    background-color: #e2e8f0;
+    color: #1e293b;
+}
+
+.btn-nav-danger {
+    background-color: #fee2e2;
+    color: #ef4444;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-nav-danger:hover {
+    background-color: #fca5a5;
+    color: #b91c1c;
+}
+
+.welcome-text {
+    color: #475569;
+    font-weight: 500;
+    font-size: 0.9rem;
+    margin-right: 1rem;
+}
