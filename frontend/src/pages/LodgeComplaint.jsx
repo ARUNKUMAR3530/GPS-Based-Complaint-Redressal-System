@@ -177,7 +177,6 @@ const LodgeComplaint = () => {
                     <div className="progress-bar-fill" style={{ width: `${(title && description) ? '100%' : (title ? '66%' : '33%')}` }}></div>
                 </div>
 
-                {/* 1. Smart Photo Evidence */}
                 <div className="form-section">
                     <label className="section-label">1. Smart Photo Evidence</label>
                     <div className="photo-upload-area">
@@ -206,17 +205,8 @@ const LodgeComplaint = () => {
                                 >
                                     <Camera size={20} /> Open Smart Camera
                                 </button>
-                                <div className="upload-text">
-                                    <span style={{ fontSize: '0.9rem', opacity: 0.7 }}>or upload from gallery</span>
-                                    <label className="upload-link" style={{ marginLeft: '0.5rem' }}>
-                                        Browse
-                                        <input
-                                            type="file"
-                                            className="hidden-input-file"
-                                            accept="image/*"
-                                            onChange={handleImageChange}
-                                        />
-                                    </label>
+                                <div className="upload-text" style={{ marginTop: '1rem', textAlign: 'center', color: '#64748b', fontSize: '0.9rem' }}>
+                                    If location is not detected automatically, please select it manually on the map below.
                                 </div>
                             </div>
                         )}
@@ -229,6 +219,9 @@ const LodgeComplaint = () => {
                     <button type="button" className="location-btn" onClick={handleGetLocation}>
                         <MapPin size={18} /> Detect My Location
                     </button>
+                    <div style={{ marginTop: '0.5rem', fontSize: '0.85rem', color: '#64748b' }}>
+                        If automatic detection fails, tap on the map to pin the exact location.
+                    </div>
 
                     {position && (
                         <div className="location-detected">

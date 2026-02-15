@@ -1,1 +1,1 @@
-%JAVA_HOME% 
+JAVA_HOME=C:\Progra~1\Java\jdk-17.0.12

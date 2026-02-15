@@ -30,12 +30,17 @@ const updateStatus = (id, status, remarks) => {
     });
 };
 
+const deleteComplaint = (id) => {
+    return api.delete(`/complaints/${id}`);
+};
+
 const ComplaintService = {
     getAllComplaints,
     getComplaintById,
     createComplaint,
     getAllComplaintsAdmin,
-    updateStatus
+    updateStatus,
+    deleteComplaint
 };
 
 export default ComplaintService;

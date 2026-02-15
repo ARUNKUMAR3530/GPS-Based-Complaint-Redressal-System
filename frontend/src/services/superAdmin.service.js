@@ -21,9 +21,7 @@ const getAdminWorkStatus = () => {
 };
 
 const sendRemark = (adminId, message) => {
-    return api.post(`/super-admin/admins/${adminId}/remark`, null, {
-        params: { message }
-    });
+    return api.post(`/super-admin/admins/${adminId}/remark`, { message });
 };
 
 const getAllDepartments = () => {

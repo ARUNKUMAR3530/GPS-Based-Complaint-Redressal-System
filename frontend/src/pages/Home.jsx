@@ -1,25 +1,26 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import './Home.css';
 
 const Home = () => {
     const { currentUser } = useContext(AuthContext);
 
     return (
-        <div className="text-center" style={{ marginTop: '5rem' }}>
-            <h1>Welcome to the Civic Complaint Redressal System</h1>
-            <p className="mt-4" style={{ fontSize: '1.2rem', color: '#666' }}>
+        <div className="home-container">
+            <h1 className="home-title">Welcome to the Civic Complaint Redressal System</h1>
+            <p className="home-subtitle">
                 Empowering citizens to report issues and helping authorities resolve them efficiently.
             </p>
 
-            <div className="mt-4">
+            <div className="home-actions">
                 {!currentUser ? (
                     <>
-                        <Link to="/login" className="btn btn-primary" style={{ marginRight: '1rem' }}>Login to Report</Link>
-                        <Link to="/register" className="btn btn-secondary">Register</Link>
+                        <Link to="/login" className="btn btn-primary home-btn">Login to Report</Link>
+                        <Link to="/register" className="btn btn-secondary home-btn">Register</Link>
                     </>
                 ) : (
-                    <Link to="/dashboard" className="btn btn-primary">Go to Dashboard</Link>
+                    <Link to="/dashboard" className="btn btn-primary home-btn">Go to Dashboard</Link>
                 )}
             </div>
         </div>

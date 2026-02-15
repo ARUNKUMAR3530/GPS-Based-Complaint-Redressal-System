@@ -63,6 +63,21 @@ public class ComplaintController {
                 return complaintService.getComplaintsByUser(user);
         }
 
+        @DeleteMapping("/complaints/{id}")
+        @PreAuthorize("hasRole('USER')")
+        public ResponseEntity<?> deleteComplaint(@PathVariable Long id) {
+                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+                UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal(); // Get ID from token
+                User user = userRepository.findById(userDetails.getId())
+                                .orElseThrow(() -> new RuntimeException("User not found"));
+                try {
+                        complaintService.deleteComplaint(id, user);
+                        return ResponseEntity.ok(new MessageResponse("Complaint deleted successfully"));
+                } catch (RuntimeException e) {
+                        return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+                }
+        }
+
         @GetMapping("/complaints/{id}")
         @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
         public ResponseEntity<?> getComplaintById(@PathVariable Long id) {

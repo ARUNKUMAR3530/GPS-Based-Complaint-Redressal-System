@@ -2,13 +2,13 @@ package com.complaint.redressal.controller;
 
 import com.complaint.redressal.model.Admin;
 import com.complaint.redressal.model.Notification;
+import com.complaint.redressal.payload.MessageResponse;
 import com.complaint.redressal.repository.AdminRepository;
 import com.complaint.redressal.repository.NotificationRepository;
-import com.complaint.redressal.security.services.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,7 +16,6 @@ import java.util.List;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/notifications")
-@PreAuthorize("hasRole('ADMIN')")
 public class NotificationController {
 
     @Autowired
@@ -26,23 +25,33 @@ public class NotificationController {
     AdminRepository adminRepository;
 
     @GetMapping
-    public List<Notification> getMyNotifications() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+    public ResponseEntity<?> getNotifications() {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Admin admin = adminRepository.findByUsername(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("Error: Admin not found."));
 
-        Admin admin = adminRepository.findById(userDetails.getId())
-                .orElseThrow(() -> new RuntimeException("Admin not found"));
+        List<Notification> notifications = notificationRepository.findByReceiverOrderByCreatedAtDesc(admin);
+        return ResponseEntity.ok(notifications);
+    }
 
-        return notificationRepository.findByAdminOrderByCreatedAtDesc(admin);
+    @GetMapping("/unread-count")
+    public ResponseEntity<?> getUnreadCount() {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Admin admin = adminRepository.findByUsername(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("Error: Admin not found."));
+
+        long count = notificationRepository.countByReceiverAndIsReadFalse(admin);
+        return ResponseEntity.ok(count);
     }
 
     @PutMapping("/{id}/read")
-    public void markAsRead(@PathVariable Long id) {
-        // Optional: Mark as read
-        notificationRepository.findById(id).ifPresent(notification -> {
-            // Check ownership if needed
-            notification.setRead(true);
-            notificationRepository.save(notification);
-        });
+    public ResponseEntity<?> markAsRead(@PathVariable Long id) {
+        return notificationRepository.findById(id)
+                .map(notification -> {
+                    notification.setRead(true);
+                    notificationRepository.save(notification);
+                    return ResponseEntity.ok(new MessageResponse("Marked as read"));
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 }

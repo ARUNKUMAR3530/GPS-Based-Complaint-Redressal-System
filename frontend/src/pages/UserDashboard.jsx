@@ -11,7 +11,8 @@ import {
     AlertCircle,
     CheckCircle2,
     XCircle,
-    Image as ImageIcon
+    Image as ImageIcon,
+    Trash2
 } from 'lucide-react';
 import './UserDashboard.css';
 import L from 'leaflet';
@@ -58,6 +59,19 @@ const UserDashboard = () => {
         }
     };
 
+    const handleDeleteComplaint = async (id, e) => {
+        e.stopPropagation();
+        if (window.confirm("Are you sure you want to delete this complaint? This action cannot be undone.")) {
+            try {
+                await ComplaintService.deleteComplaint(id);
+                toast.success("Complaint deleted successfully");
+                setComplaints(complaints.filter(c => c.id !== id));
+            } catch (error) {
+                toast.error("Failed to delete complaint: " + (error.response?.data?.message || "Unknown error"));
+            }
+        }
+    };
+
     return (
         <div className="user-dashboard">
             <div className="dashboard-header">
@@ -87,53 +101,91 @@ const UserDashboard = () => {
                             </Link>
                         </div>
                     ) : (
-                        complaints.map(complaint => (
-                            <div key={complaint.id} className="complaint-card" onClick={() => setSelectedMapComplaint(complaint)}>
-                                <div className="card-image-container">
-                                    {complaint.imageUrl ? (
-                                        <img
-                                            src={`/uploads/${complaint.imageUrl}`}
-                                            alt={complaint.title}
-                                            className="card-image"
-                                            onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
-                                        />
-                                    ) : null}
-                                    <div className="no-image-placeholder" style={{ display: complaint.imageUrl ? 'none' : 'flex' }}>
-                                        <ImageIcon size={32} />
-                                        <span className="no-image-text">No Evidence Provided</span>
+                        complaints.map(complaint => {
+                            const isDeletable = (new Date().getTime() - new Date(complaint.createdAt).getTime()) < 7 * 60 * 1000;
+                            return (
+                                <div key={complaint.id} className="complaint-card" onClick={() => setSelectedMapComplaint(complaint)}>
+                                    <div className="card-image-container">
+                                        {complaint.imageUrl ? (
+                                            <img
+                                                src={`/uploads/${complaint.imageUrl}`}
+                                                alt={complaint.title}
+                                                className="card-image"
+                                                onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
+                                            />
+                                        ) : null}
+                                        <div className="no-image-placeholder" style={{ display: complaint.imageUrl ? 'none' : 'flex' }}>
+                                            <ImageIcon size={32} />
+                                            <span className="no-image-text">No Evidence Provided</span>
+                                        </div>
+
+                                        <div className={`status-pill status-${complaint.status.toLowerCase()}`}>
+                                            {getStatusIcon(complaint.status)}
+                                            {complaint.status.replace('_', ' ')}
+                                        </div>
+
+                                        {isDeletable && (
+                                            <button
+                                                className="delete-btn"
+                                                onClick={(e) => handleDeleteComplaint(complaint.id, e)}
+                                                title="Delete this complaint (Only available for 7 mins)"
+                                            >
+                                                <Trash2 size={16} />
+                                            </button>
+                                        )}
                                     </div>
 
-                                    <div className={`status-pill status-${complaint.status.toLowerCase()}`}>
-                                        {getStatusIcon(complaint.status)}
-                                        {complaint.status.replace('_', ' ')}
+                                    <div className="card-content">
+                                        <div className="card-meta-top">
+                                            <span className="complaint-id">#{complaint.id}</span>
+                                            <span className="complaint-date">{new Date(complaint.createdAt).toLocaleDateString()}</span>
+                                        </div>
+
+                                        <h3 className="card-title">{complaint.title}</h3>
+                                        <p className="card-description">{complaint.description}</p>
+
+                                        <div className="card-details">
+                                            <div className="detail-item">
+                                                <MapPin />
+                                                <span className="truncate">{complaint.address || "Location unavailable"}</span>
+                                            </div>
+                                            <div className="detail-item">
+                                                <Clock />
+                                                <span>{new Date(complaint.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-
-                                <div className="card-content">
-                                    <div className="card-meta-top">
-                                        <span className="complaint-id">#{complaint.id}</span>
-                                        <span className="complaint-date">{new Date(complaint.createdAt).toLocaleDateString()}</span>
-                                    </div>
-
-                                    <h3 className="card-title">{complaint.title}</h3>
-                                    <p className="card-description">{complaint.description}</p>
-
-                                    <div className="card-details">
-                                        <div className="detail-item">
-                                            <MapPin />
-                                            <span className="truncate">{complaint.address || "Location unavailable"}</span>
-                                        </div>
-                                        <div className="detail-item">
-                                            <Clock />
-                                            <span>{new Date(complaint.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        ))
+                            );
+                        })
                     )}
                 </div>
             )}
+
+            <style>{`
+                .delete-btn {
+                    position: absolute;
+                    top: 1rem;
+                    left: 1rem;
+                    background: rgba(239, 68, 68, 0.9);
+                    color: white;
+                    border: none;
+                    border-radius: 50%;
+                    width: 32px;
+                    height: 32px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    z-index: 20;
+                    transition: all 0.2s;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                }
+                .delete-btn:hover {
+                    background: #dc2626;
+                    transform: scale(1.1);
+                }
+            `}</style>
 
             {/* Map Modal */}
             {selectedMapComplaint && (

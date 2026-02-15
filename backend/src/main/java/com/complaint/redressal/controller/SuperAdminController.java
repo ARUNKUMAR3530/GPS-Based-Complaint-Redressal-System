@@ -170,6 +170,9 @@ public class SuperAdminController {
     @Autowired
     com.complaint.redressal.repository.NotificationRepository notificationRepository;
 
+    @Autowired
+    private org.springframework.messaging.simp.SimpMessagingTemplate messagingTemplate;
+
     @PostMapping("/admins/{id}/remark")
     public ResponseEntity<?> sendRemark(@PathVariable Long id, @RequestBody Map<String, String> request) {
         String message = request.get("message");
@@ -177,12 +180,23 @@ public class SuperAdminController {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Message cannot be empty!"));
         }
 
+        // Identify sender? For now assume logged in Super Admin.
+        // In a real app we'd get the current user from SecurityContext.
+        // But for this requirement, we can leave sender null or set it if we fetch the
+        // current user.
+        // Let's just set the receiver.
+
         return adminRepository.findById(id)
-                .map(admin -> {
+                .map(receiver -> {
                     com.complaint.redressal.model.Notification notification = new com.complaint.redressal.model.Notification();
-                    notification.setAdmin(admin);
+                    notification.setReceiver(receiver);
                     notification.setMessage(message);
+                    notification.setType("REMARK");
                     notificationRepository.save(notification);
+
+                    // Push real-time notification
+                    messagingTemplate.convertAndSend("/topic/notifications/" + receiver.getId(), notification);
+
                     return ResponseEntity.ok(new MessageResponse("Remark sent successfully!"));
                 })
                 .orElse(ResponseEntity.notFound().build());

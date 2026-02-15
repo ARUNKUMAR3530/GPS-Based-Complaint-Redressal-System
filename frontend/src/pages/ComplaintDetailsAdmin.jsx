@@ -6,6 +6,7 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { ArrowLeft, MapPin, User, Phone, Mail, FileText, AlertTriangle } from 'lucide-react';
 import { toast } from 'react-toastify';
 import L from 'leaflet';
+import './ComplaintDetailsAdmin.css';
 
 // Fix Leaflet icons
 import icon from 'leaflet/dist/images/marker-icon.png';
@@ -58,71 +59,56 @@ const ComplaintDetailsAdmin = () => {
         }
     };
 
-    if (loading) return <div style={{ padding: '2rem', textAlign: 'center' }}>Loading...</div>;
-    if (!complaint) return <div style={{ padding: '2rem', textAlign: 'center' }}>Complaint not found</div>;
+    if (loading) return <div className="text-center p-4">Loading...</div>;
+    if (!complaint) return <div className="text-center p-4">Complaint not found</div>;
 
     const user = showPrivateData && privateData ? privateData : complaint.user;
 
     return (
-        <div className="complaint-details-page" style={{ paddingBottom: '2rem' }}>
-            <button
-                onClick={() => navigate(-1)}
-                style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.5rem',
-                    background: 'none',
-                    border: 'none',
-                    cursor: 'pointer',
-                    color: '#4b5563',
-                    marginBottom: '1rem',
-                    fontSize: '1rem'
-                }}
-            >
+        <div className="complaint-details-page">
+            <button className="back-btn" onClick={() => navigate(-1)}>
                 <ArrowLeft size={20} /> Back
             </button>
 
-            <div className="details-header" style={{ background: 'white', padding: '1.5rem', borderRadius: '12px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', marginBottom: '1.5rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                    <div>
-                        <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#111827', marginBottom: '0.5rem' }}>
-                            {complaint.title}
-                        </h1>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', color: '#6b7280', fontSize: '0.9rem' }}>
+            <div className="details-header">
+                <div className="header-content">
+                    <div className="header-title-section">
+                        <h1>{complaint.title}</h1>
+                        <div className="header-meta">
                             <span>ID: C-{complaint.id}</span>
                             <span>•</span>
                             <span>{new Date(complaint.createdAt).toLocaleString()}</span>
                         </div>
                     </div>
-                    <span className={`status-badge status-${complaint.status.toLowerCase()}`} style={{ fontSize: '1rem', padding: '0.5rem 1rem' }}>
+                    <span className={`status-badge status-${complaint.status.toLowerCase()}`}>
                         {complaint.status.replace('_', ' ')}
                     </span>
                 </div>
             </div>
 
-            <div className="details-grid" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1.5rem' }}>
+            <div className="details-grid">
                 {/* Left Column */}
-                <div className="details-main" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                <div className="details-main">
 
                     {/* Description Card */}
-                    <div className="card" style={{ background: 'white', padding: '1.5rem', borderRadius: '12px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>
-                        <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.1rem', fontWeight: '600', marginBottom: '1rem', color: '#374151' }}>
+                    <div className="details-card">
+                        <h3 className="card-header-title">
                             <FileText size={20} /> Description
                         </h3>
-                        <p style={{ lineHeight: '1.6', color: '#4b5563' }}>{complaint.description}</p>
+                        <p className="description-text">{complaint.description}</p>
                     </div>
 
                     {/* Image Card */}
                     {complaint.imageUrl && (
-                        <div className="card" style={{ background: 'white', padding: '1.5rem', borderRadius: '12px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>
-                            <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.1rem', fontWeight: '600', marginBottom: '1rem', color: '#374151' }}>
+                        <div className="details-card">
+                            <h3 className="card-header-title">
                                 Evidence
                             </h3>
-                            <div style={{ borderRadius: '8px', overflow: 'hidden', border: '1px solid #e5e7eb' }}>
+                            <div className="evidence-image-container">
                                 <img
                                     src={`/uploads/${complaint.imageUrl}`}
                                     alt="Evidence"
-                                    style={{ width: '100%', height: 'auto', maxHeight: '500px', objectFit: 'contain', background: '#f9fafb' }}
+                                    className="evidence-image"
                                 />
                             </div>
                         </div>
@@ -130,33 +116,33 @@ const ComplaintDetailsAdmin = () => {
                 </div>
 
                 {/* Right Column */}
-                <div className="details-sidebar" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                <div className="details-sidebar">
 
                     {/* Complainant Details (Gatekeeper) */}
-                    <div className="card" style={{ background: 'white', padding: '1.5rem', borderRadius: '12px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>
-                        <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.1rem', fontWeight: '600', marginBottom: '1rem', color: '#374151' }}>
+                    <div className="details-card">
+                        <h3 className="card-header-title">
                             <User size={20} /> Complainant Details
                         </h3>
 
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: '#4b5563' }}>
+                        <div className="info-column" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                            <div className="info-row">
                                 <User size={16} />
                                 <span>{user ? user.fullName : 'Unknown'}</span>
                             </div>
 
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: '#4b5563' }}>
+                            <div className="info-row">
                                 <Phone size={16} />
                                 <span>{user ? user.mobile : '******'}</span>
                             </div>
 
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: '#4b5563' }}>
+                            <div className="info-row">
                                 <Mail size={16} />
                                 <span>{user ? user.email : '******'}</span>
                             </div>
 
                             {!showPrivateData && (
-                                <div style={{ marginTop: '0.5rem', padding: '0.75rem', background: '#fef3c7', borderRadius: '8px', border: '1px solid #fcd34d' }}>
-                                    <div style={{ display: 'flex', gap: '0.5rem', fontSize: '0.85rem', color: '#92400e' }}>
+                                <div className="privacy-notice">
+                                    <div className="privacy-content">
                                         <AlertTriangle size={16} style={{ flexShrink: 0 }} />
                                         <p style={{ margin: 0 }}>
                                             Contact details are masked for Data Privacy.
@@ -165,18 +151,8 @@ const ComplaintDetailsAdmin = () => {
                                     </div>
                                     {isSuperAdmin && (
                                         <button
+                                            className="view-private-btn"
                                             onClick={handleViewPrivateData}
-                                            style={{
-                                                marginTop: '0.75rem',
-                                                width: '100%',
-                                                padding: '0.5rem',
-                                                background: '#d97706',
-                                                color: 'white',
-                                                border: 'none',
-                                                borderRadius: '6px',
-                                                cursor: 'pointer',
-                                                fontWeight: '500'
-                                            }}
                                         >
                                             View Private Data
                                         </button>
@@ -187,15 +163,15 @@ const ComplaintDetailsAdmin = () => {
                     </div>
 
                     {/* Location Card */}
-                    <div className="card" style={{ background: 'white', padding: '1.5rem', borderRadius: '12px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>
-                        <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.1rem', fontWeight: '600', marginBottom: '1rem', color: '#374151' }}>
+                    <div className="details-card">
+                        <h3 className="card-header-title">
                             <MapPin size={20} /> Location
                         </h3>
                         <p style={{ fontSize: '0.9rem', color: '#4b5563', marginBottom: '1rem' }}>
                             {complaint.address || "No address provided"}
                         </p>
                         {complaint.latitude && (
-                            <div style={{ height: '200px', borderRadius: '8px', overflow: 'hidden' }}>
+                            <div className="map-container">
                                 <MapContainer
                                     center={[complaint.latitude, complaint.longitude]}
                                     zoom={15}

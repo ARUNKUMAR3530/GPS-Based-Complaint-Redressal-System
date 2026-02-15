@@ -348,3 +348,51 @@
         transform: translate3d(4px, 0, 0);
     }
 }
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .lodge-complaint-container {
+        margin: 1rem;
+        border-radius: 12px;
+        width: calc(100% - 2rem);
+    }
+
+    .lodge-header,
+    .lodge-form {
+        padding: 1.5rem;
+    }
+
+    .lodge-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .form-actions {
+        flex-direction: column-reverse;
+        gap: 0.75rem;
+    }
+
+    .btn-submit,
+    .btn-cancel {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .photo-upload-area {
+        min-height: 200px;
+    }
+
+    .lodge-header,
+    .lodge-form {
+        padding: 1.25rem;
+    }
+
+    .metadata-overlay {
+        font-size: 0.8rem;
+    }
+
+    .meta-coords {
+        font-size: 0.7rem;
+    }
+}

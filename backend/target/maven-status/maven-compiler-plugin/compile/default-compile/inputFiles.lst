@@ -4,6 +4,7 @@ D:\final\backend\src\main\java\com\complaint\redressal\model\Notification.java
 D:\final\backend\src\main\java\com\complaint\redressal\model\StatusHistory.java
 D:\final\backend\src\main\java\com\complaint\redressal\exception\GlobalExceptionHandler.java
 D:\final\backend\src\main\java\com\complaint\redressal\controller\ComplaintController.java
+D:\final\backend\src\main\java\com\complaint\redressal\config\WebSocketConfig.java
 D:\final\backend\src\main\java\com\complaint\redressal\model\ComplaintCategory.java
 D:\final\backend\src\main\java\com\complaint\redressal\repository\NotificationRepository.java
 D:\final\backend\src\main\java\com\complaint\redressal\model\User.java

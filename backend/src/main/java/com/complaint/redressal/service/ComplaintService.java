@@ -157,4 +157,24 @@ public class ComplaintService {
 
         return updated;
     }
+
+    @Transactional
+    public void deleteComplaint(Long id, User user) {
+        Complaint complaint = complaintRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Complaint not found"));
+
+        if (!complaint.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("Unauthorized: You do not own this complaint");
+        }
+
+        long diff = java.time.Instant.now().toEpochMilli() - complaint.getCreatedAt().getTime();
+        long sevenMinutes = 7 * 60 * 1000;
+
+        if (diff > sevenMinutes) {
+            throw new RuntimeException(
+                    "Deletion time expired: Complaints can only be deleted within 7 minutes of creation.");
+        }
+
+        complaintRepository.delete(complaint);
+    }
 }

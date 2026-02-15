@@ -1,0 +1,19 @@
+==========================================
+  Complaint Redressal System - Launcher
+==========================================
+[INFO] Set JAVA_HOME to C:\Progra~1\Java\jdk-17.0.12
+[OK] Java found.
+[OK] Maven found.
+[OK] Node.js found.
+
+All tools found! Starting services...
+
+Starting Backend...
+Waiting for backend to start...
+Starting Frontend...
+
+==========================================
+  Project Started!
+  Backend running on: http://localhost:8080
+  Frontend running on: http://localhost:5173 (or similar)
+==========================================

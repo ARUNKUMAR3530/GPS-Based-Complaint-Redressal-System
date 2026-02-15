@@ -17,14 +17,25 @@ public class Notification {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "admin_id")
-    private Admin admin; // The recipient admin
+    @JoinColumn(name = "sender_id")
+    private Admin sender; // The sender admin (e.g., SUPER_ADMIN)
 
+    @ManyToOne
+    @JoinColumn(name = "receiver_id")
+    private Admin receiver; // The recipient admin
+
+    @Column(nullable = false)
     private String message;
+
+    @Column(nullable = false)
+    private String type; // e.g., "REMARK", "SYSTEM"
 
     private boolean isRead = false;
 
     private Timestamp createdAt;
+
+    // Optional: link to a complaint if relevant
+    private Long complaintId;
 
     @PrePersist
     protected void onCreate() {
