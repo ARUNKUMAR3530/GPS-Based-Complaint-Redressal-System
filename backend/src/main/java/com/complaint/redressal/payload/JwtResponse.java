@@ -13,6 +13,7 @@ public class JwtResponse {
     private String email; // Null for admin ideally, or simple string
     private List<String> roles;
     private Long departmentId; // For Admin
+    private Long municipalityId; // For Admin
     private boolean isPasswordChanged = true;
 
     public JwtResponse(String accessToken, Long id, String username, String email, List<String> roles) {
@@ -24,12 +25,14 @@ public class JwtResponse {
     }
 
     public JwtResponse(String accessToken, Long id, String username, List<String> roles, Long departmentId,
+            Long municipalityId,
             boolean isPasswordChanged) {
         this.token = accessToken;
         this.id = id;
         this.username = username;
         this.roles = roles;
         this.departmentId = departmentId;
+        this.municipalityId = municipalityId;
         this.isPasswordChanged = isPasswordChanged;
     }
 }

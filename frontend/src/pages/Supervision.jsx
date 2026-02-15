@@ -50,12 +50,12 @@ const Supervision = () => {
                     {statusData.map(stat => (
                         <div key={stat.adminId} style={{ background: 'white', padding: '15px', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
                             <h3>{stat.adminName}</h3>
-                            <p><strong>Department:</strong> {stat.departmentName || 'N/A'}</p>
+                            <p><strong>Department:</strong> {stat.departmentName || 'All Departments'}</p>
                             <p><strong>Municipality:</strong> {stat.municipalityName || 'N/A'}</p>
                             <hr />
                             <div style={{ display: 'flex', justifyContent: 'space-around', margin: '10px 0' }}>
-                                <div style={{ color: '#d97706' }}>Pending: {stat.pendingCount}</div>
-                                <div style={{ color: '#16a34a' }}>Resolved: {stat.resolvedCount}</div>
+                                <div style={{ color: '#d97706', fontWeight: 'bold' }}>Pending: {stat.pendingComplaints}</div>
+                                <div style={{ color: '#16a34a', fontWeight: 'bold' }}>Resolved: {stat.resolvedComplaints}</div>
                             </div>
 
                             <button

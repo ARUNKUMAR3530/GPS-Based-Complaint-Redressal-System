@@ -62,6 +62,7 @@ public class WebSecurityConfig {
                 .authorizeRequests().antMatchers("/api/auth/**").permitAll()
                 .antMatchers("/api/test/**").permitAll()
                 .antMatchers("/uploads/**").permitAll()
+                .antMatchers("/api/super-admin/**").hasRole("SUPER_ADMIN")
                 .anyRequest().authenticated();
 
         http.authenticationProvider(authenticationProvider());

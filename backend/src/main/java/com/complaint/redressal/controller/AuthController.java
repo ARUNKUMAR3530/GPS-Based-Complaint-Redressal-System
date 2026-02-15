@@ -1,7 +1,6 @@
 package com.complaint.redressal.controller;
 
 import com.complaint.redressal.model.User;
-import com.complaint.redressal.model.Admin;
 import com.complaint.redressal.payload.*;
 import com.complaint.redressal.repository.AdminRepository;
 import com.complaint.redressal.repository.DepartmentRepository;
@@ -27,6 +26,9 @@ import java.util.stream.Collectors;
 public class AuthController {
         @Autowired
         AuthenticationManager authenticationManager;
+
+        @Autowired
+        com.complaint.redressal.repository.MunicipalityRepository municipalityRepository;
 
         @Autowired
         UserRepository userRepository;
@@ -56,6 +58,11 @@ public class AuthController {
                 List<String> roles = userDetails.getAuthorities().stream()
                                 .map(item -> item.getAuthority())
                                 .collect(Collectors.toList());
+
+                if (!roles.contains("ROLE_USER")) {
+                        return ResponseEntity.badRequest().body(new MessageResponse(
+                                        "Error: Unauthorized. Please use the Official Login page."));
+                }
 
                 return ResponseEntity.ok(new JwtResponse(jwt,
                                 userDetails.getId(),
@@ -91,6 +98,7 @@ public class AuthController {
                                 userDetails.getUsername(),
                                 roles,
                                 userDetails.getDepartmentId(),
+                                userDetails.getMunicipalityId(),
                                 userDetails.isPasswordChanged()));
         }
 
@@ -121,19 +129,93 @@ public class AuthController {
                 return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
         }
 
-        @PostMapping("/admin/change-password")
+        @PostMapping("/change-password")
         public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordRequest changePasswordRequest) {
                 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
                 UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-                return adminRepository.findById(userDetails.getId())
-                                .map(admin -> {
-                                        admin.setPassword(encoder.encode(changePasswordRequest.getPassword()));
-                                        admin.setPasswordChanged(true);
+                List<String> roles = userDetails.getAuthorities().stream()
+                                .map(item -> item.getAuthority())
+                                .collect(Collectors.toList());
+
+                if (roles.contains("ROLE_ADMIN")) {
+                        return adminRepository.findById(userDetails.getId())
+                                        .map(admin -> {
+                                                admin.setPassword(encoder.encode(changePasswordRequest.getPassword()));
+                                                admin.setPasswordChanged(true);
+                                                adminRepository.save(admin);
+                                                return ResponseEntity.ok(
+                                                                new MessageResponse("Password changed successfully!"));
+                                        })
+                                        .orElse(ResponseEntity.badRequest()
+                                                        .body(new MessageResponse("Error: Admin not found!")));
+                } else {
+                        return userRepository.findById(userDetails.getId())
+                                        .map(user -> {
+                                                user.setPassword(encoder.encode(changePasswordRequest.getPassword()));
+                                                userRepository.save(user);
+                                                return ResponseEntity.ok(
+                                                                new MessageResponse("Password changed successfully!"));
+                                        })
+                                        .orElse(ResponseEntity.badRequest()
+                                                        .body(new MessageResponse("Error: User not found!")));
+                }
+        }
+
+        @GetMapping("/debug-reset")
+        public ResponseEntity<?> debugReset() {
+                StringBuilder status = new StringBuilder();
+
+                // Reset Super Admin
+                if (adminRepository.findByUsername("suberAD").isPresent()) {
+                        com.complaint.redressal.model.Admin admin = adminRepository.findByUsername("suberAD").get();
+                        admin.setPassword(encoder.encode("suber24"));
+                        admin.setRole(com.complaint.redressal.model.Admin.ROLE_SUPER_ADMIN);
+                        adminRepository.save(admin);
+                        status.append("Admin 'suberAD' reset to ROLE_SUPER_ADMIN. ");
+                } else {
+                        com.complaint.redressal.model.Admin admin = new com.complaint.redressal.model.Admin();
+                        admin.setUsername("suberAD");
+                        admin.setPassword(encoder.encode("suber24"));
+                        admin.setRole(com.complaint.redressal.model.Admin.ROLE_SUPER_ADMIN);
+                        adminRepository.save(admin);
+                        status.append("Admin 'suberAD' created with ROLE_SUPER_ADMIN. ");
+                }
+
+                // Reset Municipality Admins
+                String[] munAdmins = { "admin_chn:Chennai", "admin_cbe:Coimbatore", "admin_slm:Salem" };
+                for (String entry : munAdmins) {
+                        String[] parts = entry.split(":");
+                        String username = parts[0];
+                        String munName = parts[1];
+
+                        municipalityRepository.findByName(munName).ifPresent(mun -> {
+                                if (adminRepository.findByUsername(username).isPresent()) {
+                                        com.complaint.redressal.model.Admin admin = adminRepository
+                                                        .findByUsername(username).get();
+                                        admin.setPassword(encoder.encode("admin123"));
+                                        admin.setRole(com.complaint.redressal.model.Admin.ROLE_MUNICIPALITY_ADMIN);
+                                        admin.setMunicipality(mun);
                                         adminRepository.save(admin);
-                                        return ResponseEntity.ok(new MessageResponse("Password changed successfully!"));
-                                })
-                                .orElse(ResponseEntity.badRequest()
-                                                .body(new MessageResponse("Error: Admin not found!")));
+                                        status.append("Reset ").append(username).append(". ");
+                                } else {
+                                        com.complaint.redressal.model.Admin admin = new com.complaint.redressal.model.Admin();
+                                        admin.setUsername(username);
+                                        admin.setPassword(encoder.encode("admin123"));
+                                        admin.setRole(com.complaint.redressal.model.Admin.ROLE_MUNICIPALITY_ADMIN);
+                                        admin.setMunicipality(mun);
+                                        adminRepository.save(admin);
+                                        status.append("Created ").append(username).append(". ");
+                                }
+                        });
+                }
+
+                return ResponseEntity.ok(status.toString());
+        }
+
+        @GetMapping("/debug-users")
+        public ResponseEntity<?> getDebugUsers() {
+                return ResponseEntity.ok(
+                                userRepository.findAll().stream().map(User::getUsername).collect(Collectors.toList()));
         }
 }

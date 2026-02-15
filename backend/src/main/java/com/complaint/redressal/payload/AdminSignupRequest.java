@@ -17,4 +17,8 @@ public class AdminSignupRequest {
     private Long departmentId;
 
     private Long municipalityId;
+
+    private String municipalityName;
+
+    private String role;
 }

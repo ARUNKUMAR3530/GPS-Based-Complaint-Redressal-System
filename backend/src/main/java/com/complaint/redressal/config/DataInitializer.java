@@ -29,19 +29,21 @@ public class DataInitializer implements CommandLineRunner {
         seedMunicipality("Salem", "Salem");
 
         // Seed Super Admin
-        if (adminRepository.findByUsername("admin").isPresent()) {
-            System.out.println("Admin 'admin' found. Resetting password...");
-            Admin admin = adminRepository.findByUsername("admin").get();
-            admin.setPassword(passwordEncoder.encode("admin123"));
+        if (adminRepository.findByUsername("suberAD").isPresent()) {
+            System.out.println("Admin 'suberAD' found. Resetting password and role...");
+            Admin admin = adminRepository.findByUsername("suberAD").get();
+            admin.setPassword(passwordEncoder.encode("suber24"));
+            admin.setRole(Admin.ROLE_SUPER_ADMIN);
             adminRepository.save(admin);
-            System.out.println("Admin password reset to: admin123");
+            System.out.println("Admin role/password reset for: suberAD");
         } else {
-            System.out.println("Admin 'admin' not found. Creating...");
+            System.out.println("Admin 'suberAD' not found. Creating...");
             Admin admin = new Admin();
-            admin.setUsername("admin");
-            admin.setPassword(passwordEncoder.encode("admin123"));
+            admin.setUsername("suberAD");
+            admin.setPassword(passwordEncoder.encode("suber24"));
+            admin.setRole(Admin.ROLE_SUPER_ADMIN);
             adminRepository.save(admin);
-            System.out.println("Default Super Admin created: username=admin");
+            System.out.println("Default Super Admin created: username=suberAD");
         }
 
         // Seed Municipality Admins
@@ -67,15 +69,17 @@ public class DataInitializer implements CommandLineRunner {
             admin.setUsername(username);
             admin.setPassword(passwordEncoder.encode(password));
             admin.setMunicipality(municipality);
+            admin.setRole(Admin.ROLE_MUNICIPALITY_ADMIN);
             adminRepository.save(admin);
             System.out.println("Seeded Admin: " + username + " for " + municipalityName);
         } else {
-            System.out.println("Admin '" + username + "' found. Resetting password...");
+            System.out.println("Admin '" + username + "' found. Resetting password and role...");
             Admin admin = adminRepository.findByUsername(username).get();
             admin.setPassword(passwordEncoder.encode(password));
             admin.setMunicipality(municipality);
+            admin.setRole(Admin.ROLE_MUNICIPALITY_ADMIN);
             adminRepository.save(admin);
-            System.out.println("Admin password reset to: " + password);
+            System.out.println("Admin role/password reset to: " + password);
         }
     }
 }

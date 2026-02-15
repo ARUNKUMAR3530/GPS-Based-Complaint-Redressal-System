@@ -6,6 +6,8 @@ echo   Complaint Redressal System - Launcher
 echo ==========================================
 
 :: Check Java
+set "JAVA_HOME=C:\Program Files\Java\jdk-17.0.12"
+set "PATH=%JAVA_HOME%\bin;%PATH%"
 java -version >nul 2>&1
 if %errorlevel% neq 0 (
     echo [ERROR] Java is not installed or not in PATH.

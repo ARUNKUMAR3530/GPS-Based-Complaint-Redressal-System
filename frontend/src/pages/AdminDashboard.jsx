@@ -100,40 +100,40 @@ const AdminDashboard = () => {
             </div>
 
             {/* Charts Section */}
-            <div className="charts-container" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginBottom: '24px' }}>
-                <div className="chart-card" style={{ background: 'white', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>
-                    <h3 style={{ marginBottom: '16px', fontSize: '18px', fontWeight: '600', color: '#1f2937' }}>Complaint Status</h3>
+            <div className="charts-container">
+                <div className="chart-card">
+                    <h3>Complaint Status</h3>
                     {/* Placeholder for Chart - Recharts would go here */}
                     {/* Since I cannot guarantee recharts install worked fully without verifying, I will add simple bars or text if library fails, but let's try assuming it works or create a placeholder if import fails. 
                         Actually, let's just use simple HTML/CSS bars for robustness as user requested "Vanilla CSS" but "data visualization". 
                         I will use a simple CSS bar chart to be safe and fast. */}
                     <div className="simple-bar-chart">
                         {Object.entries(stats).map(([key, value]) => (
-                            <div key={key} className="chart-bar-row" style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
-                                <span style={{ width: '100px', textTransform: 'capitalize', color: '#4b5563' }}>{key.replace(/([A-Z])/g, ' $1').trim()}</span>
-                                <div style={{ flex: 1, background: '#e5e7eb', height: '20px', borderRadius: '10px', overflow: 'hidden' }}>
+                            <div key={key} className="chart-bar-row">
+                                <span className="chart-label">{key.replace(/([A-Z])/g, ' $1').trim()}</span>
+                                <div className="chart-bar-bg">
                                     <div
+                                        className="chart-bar-fill"
                                         style={{
                                             width: `${complaints.length > 0 ? (value / complaints.length) * 100 : 0}%`,
-                                            background: key === 'pending' ? '#d97706' : key === 'resolved' ? '#16a34a' : key === 'rejected' ? '#dc2626' : '#2563eb',
-                                            height: '100%'
+                                            background: key === 'pending' ? '#d97706' : key === 'resolved' ? '#16a34a' : key === 'rejected' ? '#dc2626' : '#2563eb'
                                         }}
                                     />
                                 </div>
-                                <span style={{ marginLeft: '10px', width: '30px', textAlign: 'right', fontWeight: 'bold' }}>{value}</span>
+                                <span className="chart-value">{value}</span>
                             </div>
                         ))}
                     </div>
                 </div>
 
-                <div className="chart-card" style={{ background: 'white', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>
-                    <h3 style={{ marginBottom: '16px', fontSize: '18px', fontWeight: '600', color: '#1f2937' }}>Resolution Rate</h3>
-                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '150px' }}>
-                        <div style={{ textAlign: 'center' }}>
-                            <div style={{ fontSize: '48px', fontWeight: 'bold', color: '#16a34a' }}>
+                <div className="chart-card">
+                    <h3>Resolution Rate</h3>
+                    <div className="resolution-circle-container">
+                        <div className="resolution-content">
+                            <div className="resolution-percentage">
                                 {complaints.length > 0 ? Math.round((stats.resolved / complaints.length) * 100) : 0}%
                             </div>
-                            <div style={{ color: '#6b7280' }}>Resolution Rate</div>
+                            <div className="resolution-label">Resolution Rate</div>
                         </div>
                     </div>
                 </div>

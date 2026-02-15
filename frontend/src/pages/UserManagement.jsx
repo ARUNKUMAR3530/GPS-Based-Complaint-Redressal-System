@@ -15,7 +15,9 @@ const UserManagement = () => {
         username: '',
         password: '',
         departmentId: '',
-        municipalityId: ''
+        municipalityId: '',
+        municipalityName: '',
+        role: 'ROLE_MUNICIPALITY_ADMIN' // Default role
     });
 
     useEffect(() => {
@@ -47,16 +49,20 @@ const UserManagement = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const payload = {
+            username: formData.username,
+            password: formData.password,
+            role: formData.role,
+            departmentId: (formData.departmentId && formData.departmentId !== 'all') ? parseInt(formData.departmentId) : null,
+            municipalityId: (formData.municipalityId && formData.municipalityId !== 'type_new') ? parseInt(formData.municipalityId) : null,
+            municipalityName: (formData.municipalityId === 'type_new') ? formData.municipalityName : null
+        };
+
         try {
-            await SuperAdminService.createAdmin({
-                username: formData.username,
-                password: formData.password,
-                departmentId: formData.departmentId ? parseInt(formData.departmentId) : null,
-                municipalityId: formData.municipalityId ? parseInt(formData.municipalityId) : null
-            });
+            await SuperAdminService.createAdmin(payload);
             toast.success("Admin created successfully");
             setShowModal(false);
-            setFormData({ username: '', password: '', departmentId: '', municipalityId: '' });
+            setFormData({ username: '', password: '', departmentId: '', municipalityId: '', municipalityName: '', role: 'ROLE_MUNICIPALITY_ADMIN' });
             loadData(); // Reload list
         } catch (error) {
             toast.error(error.response?.data?.message || "Failed to create admin");
@@ -87,8 +93,8 @@ const UserManagement = () => {
                 </button>
             </div>
 
-            <div className="table-container" style={{ background: 'white', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', overflow: 'hidden' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <div className="table-container" style={{ background: 'white', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '600px' }}>
                     <thead style={{ background: '#f9fafb' }}>
                         <tr>
                             <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', color: '#6b7280', textTransform: 'uppercase' }}>ID</th>
@@ -120,7 +126,9 @@ const UserManagement = () => {
                                             <span style={{ background: '#fce7f3', color: '#9d174d', padding: '2px 8px', borderRadius: '4px', fontSize: '12px' }}>
                                                 {admin.municipality.name}
                                             </span>
-                                        ) : <span style={{ background: '#d1fae5', color: '#065f46', padding: '2px 8px', borderRadius: '4px', fontSize: '12px' }}>Global (Super)</span>}
+                                        ) : (!admin.department && admin.role === 'ROLE_SUPER_ADMIN') ? (
+                                            <span style={{ background: '#d1fae5', color: '#065f46', padding: '2px 8px', borderRadius: '4px', fontSize: '12px' }}>Global (Super)</span>
+                                        ) : '-'}
                                     </td>
                                     <td style={{ padding: '12px 16px', textAlign: 'right' }}>
                                         <button
@@ -139,74 +147,124 @@ const UserManagement = () => {
             </div>
 
             {/* Create Modal */}
-            {showModal && (
-                <div className="modal-overlay" onClick={() => setShowModal(false)} style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1100 }}>
-                    <div className="modal-content" onClick={e => e.stopPropagation()} style={{ background: 'white', padding: '24px', borderRadius: '8px', minWidth: '400px' }}>
-                        <h2 style={{ marginBottom: '20px' }}>Create New Admin</h2>
-                        <form onSubmit={handleSubmit}>
-                            <div style={{ marginBottom: '16px' }}>
-                                <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500' }}>Username</label>
-                                <input
-                                    type="text"
-                                    name="username"
-                                    value={formData.username}
-                                    onChange={handleInputChange}
-                                    required
-                                    style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #d1d5db' }}
-                                />
-                            </div>
-                            <div style={{ marginBottom: '16px' }}>
-                                <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500' }}>Password</label>
-                                <input
-                                    type="password"
-                                    name="password"
-                                    value={formData.password}
-                                    onChange={handleInputChange}
-                                    required
-                                    style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #d1d5db' }}
-                                />
-                            </div>
+            {
+                showModal && (
+                    <div className="modal-overlay" onClick={() => setShowModal(false)} style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1100 }}>
+                        <div className="modal-content" onClick={e => e.stopPropagation()} style={{ background: 'white', padding: '24px', borderRadius: '8px', minWidth: '400px' }}>
+                            <h2 style={{ marginBottom: '20px' }}>Create New Admin</h2>
+                            <form onSubmit={handleSubmit}>
+                                <div style={{ marginBottom: '16px' }}>
+                                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500' }}>Role Scope</label>
+                                    <div style={{ display: 'flex', gap: '20px' }}>
+                                        <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+                                            <input
+                                                type="radio"
+                                                name="role"
+                                                value="ROLE_SUPER_ADMIN"
+                                                checked={formData.role === 'ROLE_SUPER_ADMIN'}
+                                                onChange={handleInputChange}
+                                            />
+                                            Global (Super)
+                                        </label>
+                                        <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+                                            <input
+                                                type="radio"
+                                                name="role"
+                                                value="ROLE_MUNICIPALITY_ADMIN"
+                                                checked={formData.role === 'ROLE_MUNICIPALITY_ADMIN'}
+                                                onChange={handleInputChange}
+                                            />
+                                            Municipality Admin
+                                        </label>
+                                        <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+                                            <input
+                                                type="radio"
+                                                name="role"
+                                                value="ROLE_ADMIN"
+                                                checked={formData.role === 'ROLE_ADMIN'}
+                                                onChange={handleInputChange}
+                                            />
+                                            Department Admin
+                                        </label>
+                                    </div>
+                                </div>
 
-                            <div style={{ marginBottom: '16px' }}>
-                                <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500' }}>Department (Optional)</label>
-                                <select
-                                    name="departmentId"
-                                    value={formData.departmentId}
-                                    onChange={handleInputChange}
-                                    style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #d1d5db' }}
-                                >
-                                    <option value="">-- Select Department --</option>
-                                    {departments.map(d => (
-                                        <option key={d.id} value={d.id}>{d.name}</option>
-                                    ))}
-                                </select>
-                                <small style={{ color: '#6b7280' }}>Leave empty for Super Admin (if Municipality also empty)</small>
-                            </div>
+                                <div style={{ marginBottom: '16px' }}>
+                                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500' }}>Username</label>
+                                    <input
+                                        type="text"
+                                        name="username"
+                                        value={formData.username}
+                                        onChange={handleInputChange}
+                                        required
+                                        style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #d1d5db' }}
+                                    />
+                                </div>
+                                <div style={{ marginBottom: '16px' }}>
+                                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500' }}>Password</label>
+                                    <input
+                                        type="password"
+                                        name="password"
+                                        value={formData.password}
+                                        onChange={handleInputChange}
+                                        required
+                                        style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #d1d5db' }}
+                                    />
+                                </div>
 
-                            <div style={{ marginBottom: '20px' }}>
-                                <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500' }}>Municipality (Optional)</label>
-                                <select
-                                    name="municipalityId"
-                                    value={formData.municipalityId}
-                                    onChange={handleInputChange}
-                                    style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #d1d5db' }}
-                                >
-                                    <option value="">-- Select Municipality --</option>
-                                    {municipalities.map(m => (
-                                        <option key={m.id} value={m.id}>{m.name}</option>
-                                    ))}
-                                </select>
-                            </div>
+                                <div style={{ marginBottom: '16px' }}>
+                                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500' }}>Department (Optional)</label>
+                                    <select
+                                        name="departmentId"
+                                        value={formData.departmentId}
+                                        onChange={handleInputChange}
+                                        style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #d1d5db' }}
+                                    >
+                                        <option value="">-- Select Department --</option>
+                                        <option value="all">All Departments</option>
+                                        {departments.map(d => (
+                                            <option key={d.id} value={d.id}>{d.name}</option>
+                                        ))}
+                                    </select>
+                                    <small style={{ color: '#6b7280' }}>Leave empty for Super Admin (if Municipality also empty)</small>
+                                </div>
 
-                            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
-                                <button type="button" onClick={() => setShowModal(false)} style={{ padding: '8px 16px', background: 'white', border: '1px solid #d1d5db', borderRadius: '4px', cursor: 'pointer' }}>Cancel</button>
-                                <button type="submit" style={{ padding: '8px 16px', background: '#2563eb', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>Create Admin</button>
-                            </div>
-                        </form>
+                                <div style={{ marginBottom: '20px' }}>
+                                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500' }}>Municipality (Optional)</label>
+                                    <select
+                                        name="municipalityId"
+                                        value={formData.municipalityId}
+                                        onChange={handleInputChange}
+                                        style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #d1d5db' }}
+                                    >
+                                        <option value="">-- Select Municipality --</option>
+                                        <option value="type_new">Type Municipality</option>
+                                        {municipalities.map(m => (
+                                            <option key={m.id} value={m.id}>{m.name}</option>
+                                        ))}
+                                    </select>
+                                    {formData.municipalityId === 'type_new' && (
+                                        <input
+                                            type="text"
+                                            name="municipalityName"
+                                            placeholder="Type Municipality Name"
+                                            value={formData.municipalityName}
+                                            onChange={handleInputChange}
+                                            style={{ width: '100%', padding: '8px', marginTop: '8px', borderRadius: '4px', border: '1px solid #d1d5db' }}
+                                        />
+                                    )}
+                                </div>
+
+                                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+                                    <button type="button" onClick={() => setShowModal(false)} style={{ padding: '8px 16px', background: 'white', border: '1px solid #d1d5db', borderRadius: '4px', cursor: 'pointer' }}>Cancel</button>
+                                    <button type="submit" style={{ padding: '8px 16px', background: '#2563eb', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>Create Admin</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                </div>
-            )}
-        </div>
+                )
+            }
+        </div >
     );
 };
 

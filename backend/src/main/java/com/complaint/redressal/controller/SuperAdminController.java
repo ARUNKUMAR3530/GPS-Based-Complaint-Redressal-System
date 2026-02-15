@@ -2,7 +2,6 @@ package com.complaint.redressal.controller;
 
 import com.complaint.redressal.model.Admin;
 import com.complaint.redressal.payload.AdminWorkStatus;
-import com.complaint.redressal.model.ComplaintStatus;
 import com.complaint.redressal.model.Department;
 import com.complaint.redressal.model.Municipality;
 import com.complaint.redressal.payload.AdminSignupRequest;
@@ -24,7 +23,7 @@ import java.util.Optional;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/super-admin")
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasRole('SUPER_ADMIN')")
 public class SuperAdminController {
 
     @Autowired
@@ -51,6 +50,12 @@ public class SuperAdminController {
         admin.setUsername(signUpRequest.getUsername());
         admin.setPassword(encoder.encode(signUpRequest.getPassword()));
 
+        if (signUpRequest.getRole() != null && !signUpRequest.getRole().isEmpty()) {
+            admin.setRole(signUpRequest.getRole());
+        } else {
+            admin.setRole(Admin.ROLE_ADMIN); // Default fallback
+        }
+
         if (signUpRequest.getDepartmentId() != null) {
             Optional<Department> department = departmentRepository.findById(signUpRequest.getDepartmentId());
             department.ifPresent(admin::setDepartment);
@@ -59,6 +64,17 @@ public class SuperAdminController {
         if (signUpRequest.getMunicipalityId() != null) {
             Optional<Municipality> municipality = municipalityRepository.findById(signUpRequest.getMunicipalityId());
             municipality.ifPresent(admin::setMunicipality);
+        } else if (signUpRequest.getMunicipalityName() != null && !signUpRequest.getMunicipalityName().isEmpty()) {
+            Optional<Municipality> existingMunicipality = municipalityRepository
+                    .findByName(signUpRequest.getMunicipalityName());
+            if (existingMunicipality.isPresent()) {
+                admin.setMunicipality(existingMunicipality.get());
+            } else {
+                Municipality newMunicipality = new Municipality(signUpRequest.getMunicipalityName(),
+                        signUpRequest.getMunicipalityName()); // Default district to name
+                municipalityRepository.save(newMunicipality);
+                admin.setMunicipality(newMunicipality);
+            }
         }
 
         adminRepository.save(admin);

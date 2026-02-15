@@ -50,7 +50,7 @@ const getCurrentUser = () => {
 };
 
 const changePassword = (password) => {
-    return api.post('/auth/admin/change-password', {
+    return api.post('/auth/change-password', {
         password
     });
 };

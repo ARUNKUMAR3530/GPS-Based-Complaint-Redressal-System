@@ -27,17 +27,20 @@ public class UserDetailsImpl implements UserDetails {
     private Collection<? extends GrantedAuthority> authorities;
 
     private Long departmentId; // For Admin
+    private Long municipalityId; // For Admin
 
     private boolean isPasswordChanged = true; // Default true for users
 
     public UserDetailsImpl(Long id, String username, String email, String password,
-            Collection<? extends GrantedAuthority> authorities, Long departmentId, boolean isPasswordChanged) {
+            Collection<? extends GrantedAuthority> authorities, Long departmentId, Long municipalityId,
+            boolean isPasswordChanged) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.password = password;
         this.authorities = authorities;
         this.departmentId = departmentId;
+        this.municipalityId = municipalityId;
         this.isPasswordChanged = isPasswordChanged;
     }
 
@@ -52,15 +55,27 @@ public class UserDetailsImpl implements UserDetails {
                 user.getPassword(),
                 authorities,
                 null,
+                null,
                 true);
     }
 
     public static UserDetailsImpl build(Admin admin) {
         List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+
+        if (Admin.ROLE_SUPER_ADMIN.equals(admin.getRole()) || "SUPER_ADMIN".equals(admin.getRole())) {
+            authorities.add(new SimpleGrantedAuthority(Admin.ROLE_SUPER_ADMIN));
+            authorities.add(new SimpleGrantedAuthority(Admin.ROLE_ADMIN)); // Keep basic role for shared access
+        } else if (Admin.ROLE_MUNICIPALITY_ADMIN.equals(admin.getRole())
+                || "MUNICIPALITY_ADMIN".equals(admin.getRole())) {
+            authorities.add(new SimpleGrantedAuthority(Admin.ROLE_MUNICIPALITY_ADMIN));
+            authorities.add(new SimpleGrantedAuthority(Admin.ROLE_ADMIN));
+        } else {
+            authorities.add(new SimpleGrantedAuthority(Admin.ROLE_ADMIN));
+        }
         // Add more specific roles if needed based on department or existing logic
 
         Long deptId = (admin.getDepartment() != null) ? admin.getDepartment().getId() : null;
+        Long munId = (admin.getMunicipality() != null) ? admin.getMunicipality().getId() : null;
 
         return new UserDetailsImpl(
                 admin.getId(),
@@ -69,6 +84,7 @@ public class UserDetailsImpl implements UserDetails {
                 admin.getPassword(),
                 authorities,
                 deptId,
+                munId,
                 admin.isPasswordChanged());
     }
 
@@ -87,6 +103,10 @@ public class UserDetailsImpl implements UserDetails {
 
     public Long getDepartmentId() {
         return departmentId;
+    }
+
+    public Long getMunicipalityId() {
+        return municipalityId;
     }
 
     public boolean isPasswordChanged() {
