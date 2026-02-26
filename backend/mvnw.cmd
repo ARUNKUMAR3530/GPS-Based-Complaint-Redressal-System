@@ -1,4 +1,7 @@
 @echo off
+set "JAVA_HOME=C:\Program Files\Java\jdk-17.0.12"
+set "Path=%JAVA_HOME%\bin;%Path%"
+echo Using forced JAVA_HOME: %JAVA_HOME%
 if "%OS%"=="Windows_NT" setlocal
 
 set DIRNAME=%~dp0
@@ -13,7 +16,7 @@ set MAVEN_OPTS=-Xmx512m
 if defined JAVA_HOME goto findJavaFromJavaHome
 
 set JAVA_EXE=java.exe
-%JAVA_EXE% -version >NUL 2>&1
+"%JAVA_EXE%" -version >NUL 2>&1
 if "%ERRORLEVEL%" == "0" goto execute
 
 echo.
@@ -41,10 +44,12 @@ goto fail
 :execute
 @rem Setup the command line
 
-set WRAPPER_JAR="%APP_HOME%\.mvn\wrapper\maven-wrapper.jar"
+set WRAPPER_JAR=%APP_HOME%\.mvn\wrapper\maven-wrapper.jar
 set WRAPPER_LAUNCHER=org.apache.maven.wrapper.MavenWrapperMain
 
-%JAVA_EXE% %MAVEN_OPTS% -classpath %WRAPPER_JAR% %WRAPPER_LAUNCHER% %*
+echo Executing: "%JAVA_EXE%" %MAVEN_OPTS% "-Dmaven.multiModuleProjectDirectory=." -classpath "%WRAPPER_JAR%" %WRAPPER_LAUNCHER% %*
+
+"%JAVA_EXE%" %MAVEN_OPTS% "-Dmaven.multiModuleProjectDirectory=." -classpath "%WRAPPER_JAR%" %WRAPPER_LAUNCHER% %*
 if "%ERRORLEVEL%" == "0" goto mainEnd
 
 :fail

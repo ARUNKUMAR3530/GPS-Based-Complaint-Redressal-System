@@ -1,0 +1,24 @@
+Using forced JAVA_HOME: C:\Program Files\Java\jdk-17.0.12
+Executing: "C:\Program Files\Java\jdk-17.0.12/bin/java.exe" -Xmx512m "-Dmaven.multiModuleProjectDirectory=." -classpath "D:\froject_file\final\backend\\.mvn\wrapper\maven-wrapper.jar" org.apache.maven.wrapper.MavenWrapperMain clean compile
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ----------------------< com.complaint:redressal >-----------------------
+[INFO] Building complaint-redressal-system 0.0.1-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.4.0:clean (default-clean) @ redressal ---
+[INFO] Deleting D:\froject_file\final\backend\target
+[INFO] 
+[INFO] --- maven-resources-plugin:3.3.1:resources (default-resources) @ redressal ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 0 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.13.0:compile (default-compile) @ redressal ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 40 source files with javac [debug parameters release 17] to target\classes
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  6.535 s
+[INFO] Finished at: 2026-02-18T16:40:13+05:30
+[INFO] ------------------------------------------------------------------------

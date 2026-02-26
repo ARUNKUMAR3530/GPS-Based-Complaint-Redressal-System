@@ -1,6 +1,6 @@
 package com.complaint.redressal.model;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.sql.Timestamp;
 import java.time.Instant;
 import lombok.Data;
