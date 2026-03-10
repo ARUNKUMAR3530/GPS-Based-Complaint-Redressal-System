@@ -6,3 +6,23 @@ dist/
 build/
 .env
 .DS_Store
+
+# Temp & debug files
+tmpclaude-*
+!Dockerfile
+*.log
+*_log*.txt
+debug_run.txt
+test_io.txt
+test_output.txt
+port_check.txt
+winget_search.txt
+java_home.txt
+java_version.txt
+javac_path.txt
+mvn_version*.txt
+query
+
+# Deployment configurations
+!vercel.json
+!netlify.toml
