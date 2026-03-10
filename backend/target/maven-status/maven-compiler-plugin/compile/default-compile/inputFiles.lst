@@ -26,6 +26,7 @@ D:\froject_file\final\backend\src\main\java\com\complaint\redressal\payload\JwtR
 D:\froject_file\final\backend\src\main\java\com\complaint\redressal\payload\LoginRequest.java
 D:\froject_file\final\backend\src\main\java\com\complaint\redressal\payload\MessageResponse.java
 D:\froject_file\final\backend\src\main\java\com\complaint\redressal\payload\SignupRequest.java
+D:\froject_file\final\backend\src\main\java\com\complaint\redressal\payload\UpdateStatusRequest.java
 D:\froject_file\final\backend\src\main\java\com\complaint\redressal\repository\AdminRepository.java
 D:\froject_file\final\backend\src\main\java\com\complaint\redressal\repository\ComplaintRepository.java
 D:\froject_file\final\backend\src\main\java\com\complaint\redressal\repository\DepartmentRepository.java

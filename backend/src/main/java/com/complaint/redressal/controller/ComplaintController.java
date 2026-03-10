@@ -1,6 +1,7 @@
 package com.complaint.redressal.controller;
 
 import com.complaint.redressal.model.*;
+import com.complaint.redressal.payload.UpdateStatusRequest;
 import com.complaint.redressal.repository.AdminRepository;
 import com.complaint.redressal.repository.UserRepository;
 import com.complaint.redressal.security.services.UserDetailsImpl;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,6 +37,7 @@ public class ComplaintController {
         @PostMapping("/complaints")
         @PreAuthorize("hasRole('USER')")
         public ResponseEntity<?> createComplaint(
+                        @AuthenticationPrincipal UserDetailsImpl userDetails,
                         @RequestParam("title") String title,
                         @RequestParam("description") String description,
                         @RequestParam("category") ComplaintCategory category,
@@ -42,9 +45,6 @@ public class ComplaintController {
                         @RequestParam("longitude") Double longitude,
                         @RequestParam(value = "address", required = false) String address,
                         @RequestParam(value = "image", required = false) MultipartFile image) {
-
-                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
                 User user = userRepository.findById(userDetails.getId())
                                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -56,9 +56,7 @@ public class ComplaintController {
 
         @GetMapping("/complaints/my")
         @PreAuthorize("hasRole('USER')")
-        public List<Complaint> getMyComplaints() {
-                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        public List<Complaint> getMyComplaints(@AuthenticationPrincipal UserDetailsImpl userDetails) {
                 User user = userRepository.findById(userDetails.getId())
                                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -67,9 +65,8 @@ public class ComplaintController {
 
         @DeleteMapping("/complaints/{id}")
         @PreAuthorize("hasRole('USER')")
-        public ResponseEntity<?> deleteComplaint(@PathVariable Long id) {
-                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal(); // Get ID from token
+        public ResponseEntity<?> deleteComplaint(@PathVariable Long id,
+                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
                 User user = userRepository.findById(userDetails.getId())
                                 .orElseThrow(() -> new RuntimeException("User not found"));
                 try {
@@ -82,34 +79,18 @@ public class ComplaintController {
 
         @GetMapping("/complaints/{id}")
         @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-        public ResponseEntity<?> getComplaintById(@PathVariable Long id) {
+        public ResponseEntity<?> getComplaintById(@PathVariable Long id,
+                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
                 return complaintService.getComplaintById(id)
-                                .map(complaint -> {
-                                        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-                                        UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
-
-                                        boolean maskUser = false;
-                                        if (userDetails.getAuthorities().stream()
-                                                        .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
-                                                Admin admin = adminRepository.findById(userDetails.getId())
-                                                                .orElse(null);
-                                                if (admin != null) {
-                                                        boolean isSuperAdmin = (admin.getDepartment() == null
-                                                                        && admin.getMunicipality() == null);
-                                                        maskUser = !isSuperAdmin;
-                                                }
-                                        }
-                                        return ResponseEntity.ok(ComplaintDTO.fromEntity(complaint, maskUser));
-                                })
+                                .map(complaint -> ResponseEntity.ok(
+                                                ComplaintDTO.fromEntity(complaint, shouldMaskUserDetails(userDetails))))
                                 .orElse(ResponseEntity.notFound().build());
         }
 
         @GetMapping("/admin/complaints/{id}/complainant-details")
         @PreAuthorize("hasRole('ADMIN')")
-        public ResponseEntity<?> getComplainantDetails(@PathVariable Long id) {
-                Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-                UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
-
+        public ResponseEntity<?> getComplainantDetails(@PathVariable Long id,
+                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
                 Admin admin = adminRepository.findById(userDetails.getId())
                                 .orElseThrow(() -> new RuntimeException("Admin not found"));
 
@@ -128,39 +109,39 @@ public class ComplaintController {
 
         @GetMapping("/admin/complaints")
         @PreAuthorize("hasRole('ADMIN')")
-        public List<ComplaintDTO> getAllComplaints() {
-                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        public List<ComplaintDTO> getAllComplaints(@AuthenticationPrincipal UserDetailsImpl userDetails) {
                 Admin admin = adminRepository.findById(userDetails.getId())
                                 .orElseThrow(() -> new RuntimeException("Admin not found"));
 
                 List<Complaint> complaints = complaintService.getComplaintsForAdmin(admin);
 
-                boolean isSuperAdmin = (admin.getDepartment() == null && admin.getMunicipality() == null);
-                boolean maskUser = !isSuperAdmin;
-
                 return complaints.stream()
-                                .map(c -> ComplaintDTO.fromEntity(c, maskUser))
+                                .map(c -> ComplaintDTO.fromEntity(c, shouldMaskUserDetails(userDetails)))
                                 .collect(Collectors.toList());
         }
 
         @PutMapping("/admin/complaints/{id}/status")
         @PreAuthorize("hasRole('ADMIN')")
         public ResponseEntity<?> updateStatus(
+                        @AuthenticationPrincipal UserDetailsImpl userDetails,
                         @PathVariable Long id,
-                        @RequestParam("status") ComplaintStatus status,
-                        @RequestParam("remarks") String remarks) {
-
-                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+                        @RequestBody UpdateStatusRequest request) {
                 Admin admin = adminRepository.findById(userDetails.getId())
                                 .orElseThrow(() -> new RuntimeException("Admin not found"));
 
-                Complaint complaint = complaintService.updateStatus(id, status, remarks, admin);
+                Complaint complaint = complaintService.updateStatus(id, request.getStatus(), request.getRemarks(),
+                                admin);
 
-                boolean isSuperAdmin = (admin.getDepartment() == null && admin.getMunicipality() == null);
-                boolean maskUser = !isSuperAdmin;
+                return ResponseEntity.ok(ComplaintDTO.fromEntity(complaint, shouldMaskUserDetails(userDetails)));
+        }
 
-                return ResponseEntity.ok(ComplaintDTO.fromEntity(complaint, maskUser));
+        private boolean shouldMaskUserDetails(UserDetailsImpl userDetails) {
+                if (userDetails.getAuthorities().stream().noneMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+                        return false; // Not an admin, no masking logic applies
+                }
+                // Mask details if the user is an admin but NOT a super-admin
+                return adminRepository.findById(userDetails.getId())
+                                .map(admin -> !(admin.getDepartment() == null && admin.getMunicipality() == null))
+                                .orElse(true); // Should not happen, but if admin not found, mask by default for safety
         }
 }

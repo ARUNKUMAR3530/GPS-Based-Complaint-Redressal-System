@@ -24,6 +24,18 @@ const sendRemark = (adminId, message) => {
     return api.post(`/super-admin/admins/${adminId}/remark`, { message });
 };
 
+const sendComplaintRemark = (adminId, complaintId, message) => {
+    return api.post(`/super-admin/admins/${adminId}/remark`, { message }, {
+        params: { complaintId }
+    });
+};
+
+const replyToRemark = (complaintId, message) => {
+    return api.post('/super-admin/admins/reply', { message }, {
+        params: { complaintId }
+    });
+};
+
 const getAllDepartments = () => {
     return api.get('/super-admin/departments');
 };
@@ -39,6 +51,8 @@ const SuperAdminService = {
     deleteAdmin,
     getAdminWorkStatus,
     sendRemark,
+    sendComplaintRemark,
+    replyToRemark,
     getAllDepartments,
     getAllMunicipalities
 };
