@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import AuthService from '../services/auth.service';
 import {
@@ -8,18 +8,72 @@ import {
     Activity,
     LogOut,
     ShieldCheck,
-    X
+    X,
+    Bell
 } from 'lucide-react';
 import './Sidebar.css';
+import NotificationService from '../services/notification.service';
+import useWebSocket from '../hooks/useWebSocket';
 
 const Sidebar = ({ isOpen, onClose }) => {
     const navigate = useNavigate();
     const currentUser = AuthService.getCurrentUser();
-    const isSuperAdmin = currentUser && currentUser.roles.includes("ROLE_SUPER_ADMIN");
+    const isSuperAdmin = currentUser && currentUser.roles && currentUser.roles.includes("ROLE_SUPER_ADMIN");
+
+    const [unreadCount, setUnreadCount] = React.useState(0);
+
+    const fetchUnreadCount = useCallback(() => {
+        if (!currentUser) return;
+
+        if (currentUser.roles && currentUser.roles.includes("ROLE_USER")) {
+            NotificationService.getUserUnreadCount()
+                .then(res => setUnreadCount(res.data))
+                .catch(() => { });
+        } else {
+            NotificationService.getUnreadCount()
+                .then(res => setUnreadCount(res.data))
+                .catch(() => { });
+        }
+    }, [currentUser]);
+
+    // Stable topic string — only recalculates when currentUser changes
+    const topic = useMemo(() => {
+        if (!currentUser) return null;
+        if (currentUser.roles && currentUser.roles.includes("ROLE_USER")) {
+            return `/topic/user-notifications/${currentUser.id}`;
+        }
+        return `/topic/notifications/${currentUser.id}`;
+    }, [currentUser]);
+
+    // Stable callback ref via useWebSocket internals
+    const handleNewNotification = useCallback(() => {
+        setUnreadCount(prev => prev + 1);
+    }, []);
+
+    useWebSocket(topic, handleNewNotification);
+
+    React.useEffect(() => {
+        fetchUnreadCount();
+    }, [fetchUnreadCount]);
+
+    // Listen for notification-read events from other components (e.g., Notifications page)
+    React.useEffect(() => {
+        const handleNotificationRead = () => fetchUnreadCount();
+        window.addEventListener('notification-read', handleNotificationRead);
+        return () => window.removeEventListener('notification-read', handleNotificationRead);
+    }, [fetchUnreadCount]);
 
     const handleLogout = () => {
         AuthService.logout();
         navigate('/login');
+    };
+
+    // Guard against missing role info
+    const getRoleLabel = () => {
+        if (!currentUser || !currentUser.roles) return 'Admin';
+        if (currentUser.roles.includes("ROLE_SUPER_ADMIN")) return 'Super Admin';
+        if (currentUser.roles.includes("ROLE_MUNICIPALITY_ADMIN")) return 'Municipality Admin';
+        return 'Department Admin';
     };
 
     return (
@@ -49,6 +103,18 @@ const Sidebar = ({ isOpen, onClose }) => {
                         <span>Complaints</span>
                     </NavLink>
 
+                    <NavLink to="/admin/notifications" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
+                        <div className="nav-icon-wrapper">
+                            <Bell size={20} />
+                            {unreadCount > 0 && (
+                                <span className="notification-badge">
+                                    {unreadCount > 99 ? '99+' : unreadCount}
+                                </span>
+                            )}
+                        </div>
+                        <span>Notifications</span>
+                    </NavLink>
+
                     {isSuperAdmin && (
                         <>
                             <NavLink to="/admin/supervision" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
@@ -65,21 +131,19 @@ const Sidebar = ({ isOpen, onClose }) => {
 
                 <div className="sidebar-footer">
                     <div className="user-info">
-                        <div className="user-avatar">{currentUser?.username?.charAt(0).toUpperCase()}</div>
+                        <div className="user-avatar">
+                            {currentUser?.username?.charAt(0).toUpperCase() || '?'}
+                        </div>
                         <div className="user-details">
-                            <span className="username">{currentUser?.username}</span>
-                            <span className="role">
-                                {currentUser.roles.includes("ROLE_SUPER_ADMIN") ? 'Super Admin' :
-                                    currentUser.roles.includes("ROLE_MUNICIPALITY_ADMIN") ? 'Municipality Admin' :
-                                        'Department Admin'}
-                            </span>
+                            <span className="username">{currentUser?.username || 'Unknown'}</span>
+                            <span className="role">{getRoleLabel()}</span>
                         </div>
                     </div>
                     <button onClick={handleLogout} className="logout-btn">
                         <LogOut size={20} />
                     </button>
                 </div>
-            </aside >
+            </aside>
         </>
     );
 };

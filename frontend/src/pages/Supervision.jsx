@@ -49,7 +49,7 @@ const Supervision = () => {
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '20px', marginTop: '20px' }}>
                     {statusData.map(stat => (
                         <div key={stat.adminId} style={{ background: 'white', padding: '15px', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
-                            <h3>{stat.adminName}</h3>
+                            <h3>{stat.username}</h3>
                             <p><strong>Department:</strong> {stat.departmentName || 'All Departments'}</p>
                             <p><strong>Municipality:</strong> {stat.municipalityName || 'N/A'}</p>
                             <hr />

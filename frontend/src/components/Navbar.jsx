@@ -1,8 +1,9 @@
 import React, { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-
 import './Navbar.css';
+
+const ADMIN_ROLES = ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_MUNICIPALITY_ADMIN'];
 
 const Navbar = () => {
     const { currentUser, logout } = useContext(AuthContext);
@@ -12,6 +13,8 @@ const Navbar = () => {
         logout();
         navigate('/login');
     };
+
+    const isAdmin = currentUser?.roles && ADMIN_ROLES.some(role => currentUser.roles.includes(role));
 
     return (
         <nav className="navbar">
@@ -26,7 +29,7 @@ const Navbar = () => {
                     ) : (
                         <>
                             <span className="welcome-text">Welcome, {currentUser.username}</span>
-                            {currentUser.roles && currentUser.roles.includes('ROLE_ADMIN') ? (
+                            {isAdmin ? (
                                 <Link to="/admin/dashboard" className="btn-nav btn-nav-primary">Dashboard</Link>
                             ) : (
                                 <Link to="/dashboard" className="btn-nav btn-nav-primary">Dashboard</Link>

@@ -1,5 +1,4 @@
 import api from './api';
-import { jwtDecode } from "jwt-decode"; // Correct import for v4
 
 const register = (username, email, password, fullName, mobile) => {
     return api.post('/auth/register', {
@@ -42,11 +41,17 @@ const adminLogin = (username, password) => {
 const logout = () => {
     localStorage.removeItem('user');
     localStorage.removeItem('token');
-    window.location.reload(); // Simple way to reset state
+    // Do NOT call window.location.reload() — let React Router handle navigation
 };
 
 const getCurrentUser = () => {
-    return JSON.parse(localStorage.getItem('user'));
+    try {
+        const user = localStorage.getItem('user');
+        return user ? JSON.parse(user) : null;
+    } catch (e) {
+        console.error("Failed to parse user from localStorage:", e);
+        return null;
+    }
 };
 
 const changePassword = (password) => {

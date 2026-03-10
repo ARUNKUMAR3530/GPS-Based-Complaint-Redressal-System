@@ -27,6 +27,12 @@ public class ComplaintService {
     @Autowired
     private MunicipalityRepository municipalityRepository;
 
+    @Autowired
+    private NotificationService notificationService;
+
+    @Autowired
+    private AdminRepository adminRepository;
+
     @Transactional
     public Complaint createComplaint(String title, String description, ComplaintCategory category,
             Double lat, Double lon, String address, MultipartFile file, User user) {
@@ -59,7 +65,28 @@ public class ComplaintService {
         // Auto-assign Municipality based on Location
         assignMunicipality(complaint, lat, lon);
 
-        return complaintRepository.save(complaint);
+        Complaint savedComplaint = complaintRepository.save(complaint);
+
+        // Notify Admins (Municipality Admin and Super Admin)
+        String message = "New Complaint Received: " + savedComplaint.getTitle();
+
+        // Find Admins of this municipality
+        if (savedComplaint.getMunicipality() != null) {
+            List<Admin> municipalityAdmins = adminRepository.findByMunicipality(savedComplaint.getMunicipality());
+            for (Admin admin : municipalityAdmins) {
+                notificationService.createAdminNotification(null, admin, message, NotificationType.NEW_COMPLAINT,
+                        savedComplaint);
+            }
+        }
+
+        // Also notify Super Admins
+        List<Admin> superAdmins = adminRepository.findByRole("ROLE_SUPER_ADMIN");
+        for (Admin admin : superAdmins) {
+            notificationService.createAdminNotification(null, admin, message, NotificationType.NEW_COMPLAINT,
+                    savedComplaint);
+        }
+
+        return savedComplaint;
     }
 
     private void assignMunicipality(Complaint complaint, Double lat, Double lon) {
@@ -154,6 +181,19 @@ public class ComplaintService {
         history.setRemarks(remarks);
         history.setUpdatedBy(admin);
         statusHistoryRepository.save(history);
+
+        // Trigger notification to user (citizen) about status change
+        if (updated.getUser() != null) {
+            String message = String.format(
+                    "Your complaint status has been updated to %s. %s",
+                    status.toString(),
+                    remarks != null && !remarks.isEmpty() ? "Remarks: " + remarks : "");
+            notificationService.createUserNotification(
+                    updated.getUser(),
+                    updated,
+                    NotificationType.STATUS_CHANGED,
+                    message.trim());
+        }
 
         return updated;
     }

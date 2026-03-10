@@ -3,6 +3,7 @@ package com.complaint.redressal.model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -27,15 +28,18 @@ public class Notification {
     @Column(nullable = false)
     private String message;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String type; // e.g., "REMARK", "SYSTEM"
+    private NotificationType type; // e.g., REMARK, ADMIN_REPLY
 
-    private boolean isRead = false;
+    @JsonProperty("isRead")
+    private Boolean isRead = false;
 
     private Timestamp createdAt;
 
-    // Optional: link to a complaint if relevant
-    private Long complaintId;
+    @ManyToOne
+    @JoinColumn(name = "complaint_id")
+    private Complaint complaint; // Link to associated complaint
 
     @PrePersist
     protected void onCreate() {

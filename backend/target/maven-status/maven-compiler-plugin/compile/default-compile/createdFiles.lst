@@ -1,4 +1,5 @@
 com\complaint\redressal\exception\GlobalExceptionHandler.class
+com\complaint\redressal\payload\ComplaintDTO.class
 com\complaint\redressal\config\WebSocketConfig.class
 com\complaint\redressal\model\Notification.class
 com\complaint\redressal\model\Admin.class
@@ -7,14 +8,19 @@ com\complaint\redressal\ComplaintRedressalApplication.class
 com\complaint\redressal\security\services\UserDetailsImpl.class
 com\complaint\redressal\model\ComplaintCategory.class
 com\complaint\redressal\model\User.class
+com\complaint\redressal\payload\ComplaintDTO$UserDTO.class
 com\complaint\redressal\repository\MunicipalityRepository.class
 com\complaint\redressal\service\ComplaintService.class
 com\complaint\redressal\model\StatusHistory.class
 com\complaint\redressal\repository\AdminRepository.class
+com\complaint\redressal\service\NotificationService.class
+com\complaint\redressal\model\NotificationType.class
 com\complaint\redressal\payload\AdminWorkStatus.class
+com\complaint\redressal\repository\UserNotificationRepository.class
 com\complaint\redressal\controller\ComplaintController.class
 com\complaint\redressal\security\jwt\AuthEntryPointJwt.class
 com\complaint\redressal\controller\SuperAdminController.class
+com\complaint\redressal\model\UserNotification.class
 com\complaint\redressal\controller\AuthController.class
 com\complaint\redressal\payload\LoginRequest.class
 com\complaint\redressal\service\ComplaintService$1.class

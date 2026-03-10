@@ -100,6 +100,7 @@
 				<configuration>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
+					<parameters>true</parameters>
 					<annotationProcessorPaths>
 						<path>
 							<groupId>org.projectlombok</groupId>
@@ -113,4 +114,3 @@
 	</build>
 
 </project>
-<!-- Trigger project update due to Java 17/1.8 mismatch -->

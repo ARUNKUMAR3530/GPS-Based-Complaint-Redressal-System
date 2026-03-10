@@ -38,6 +38,18 @@ const getComplainantDetails = (id) => {
     return api.get(`/admin/complaints/${id}/complainant-details`);
 };
 
+const sendRemark = (adminId, complaintId, message) => {
+    return api.post(`/super-admin/admins/${adminId}/remark`, { message }, {
+        params: { complaintId }
+    });
+};
+
+const replyToRemark = (complaintId, message) => {
+    return api.post('/super-admin/admins/reply', { message }, {
+        params: { complaintId }
+    });
+};
+
 const ComplaintService = {
     getAllComplaints,
     getComplaintById,
@@ -45,7 +57,9 @@ const ComplaintService = {
     getAllComplaintsAdmin,
     updateStatus,
     deleteComplaint,
-    getComplainantDetails
+    getComplainantDetails,
+    sendRemark,
+    replyToRemark
 };
 
 export default ComplaintService;

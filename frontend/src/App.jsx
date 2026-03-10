@@ -6,7 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
-import AdminLayout from './components/AdminLayout'; // Import AdminLayout
+import AdminLayout from './components/AdminLayout';
 import UnifiedLogin from './pages/UnifiedLogin';
 import Register from './pages/Register';
 import Home from './pages/Home';
@@ -17,6 +17,7 @@ import Supervision from './pages/Supervision';
 import UserManagement from './pages/UserManagement';
 import ComplaintDetailsAdmin from './pages/ComplaintDetailsAdmin';
 import ChangePassword from './pages/ChangePassword';
+import Notifications from './pages/Notifications';
 
 // Layout for User pages (Navbar + Container)
 const UserLayout = ({ children }) => (
@@ -55,6 +56,7 @@ function App() {
                             <Route path="complaints" element={<AdminDashboard />} />
                             <Route path="supervision" element={<Supervision />} />
                             <Route path="users" element={<UserManagement />} />
+                            <Route path="notifications" element={<Notifications />} />
                             <Route path="complaints/:id/details" element={<ComplaintDetailsAdmin />} />
                         </Route>
                     </Route>

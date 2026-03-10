@@ -1,24 +1,36 @@
-import axios from 'axios';
-import AuthService from './auth.service';
-
-const API_URL = "http://localhost:8080/api/notifications";
+import api from './api';
 
 const getNotifications = () => {
-    return axios.get(API_URL, { headers: AuthService.authHeader() });
+    return api.get('/notifications');
 };
 
 const getUnreadCount = () => {
-    return axios.get(API_URL + "/unread-count", { headers: AuthService.authHeader() });
+    return api.get('/notifications/unread-count');
 };
 
 const markAsRead = (id) => {
-    return axios.put(API_URL + `/${id}/read`, {}, { headers: AuthService.authHeader() });
+    return api.put(`/notifications/${id}/read`);
+};
+
+const getUserNotifications = () => {
+    return api.get('/notifications/user');
+};
+
+const getUserUnreadCount = () => {
+    return api.get('/notifications/user/unread-count');
+};
+
+const markUserNotificationAsRead = (id) => {
+    return api.put(`/notifications/user/${id}/read`);
 };
 
 const NotificationService = {
     getNotifications,
     getUnreadCount,
-    markAsRead
+    markAsRead,
+    getUserNotifications,
+    getUserUnreadCount,
+    markUserNotificationAsRead
 };
 
 export default NotificationService;

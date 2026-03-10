@@ -7,12 +7,15 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "kill:frontend": "powershell -Command \"try { Get-NetTCPConnection -LocalPort 3000,3001 -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue } } catch {}; exit 0\"",
+    "kill:backend": "powershell -Command \"try { Get-NetTCPConnection -LocalPort 8081 -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue } } catch {}; exit 0\"",
+    "kill:all": "npm run kill:frontend && npm run kill:backend",
+    "predev": "npm run kill:frontend"
   },
   "dependencies": {
     "@stomp/stompjs": "^7.3.0",
     "axios": "^1.6.0",
-    "jwt-decode": "^4.0.0",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.563.0",
     "react": "^18.2.0",
@@ -21,8 +24,7 @@
     "react-router-dom": "^6.18.0",
     "react-toastify": "^9.1.3",
     "recharts": "^3.7.0",
-    "sockjs-client": "^1.6.1",
-    "stompjs": "^2.3.3"
+    "sockjs-client": "^1.6.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.37",

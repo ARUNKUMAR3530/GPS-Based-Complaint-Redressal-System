@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { Bell } from 'lucide-react';
 import NotificationService from '../services/notification.service';
 import AuthService from '../services/auth.service';
-import SockJS from 'sockjs-client';
-import { Stomp } from '@stomp/stompjs';
+import useWebSocket from '../hooks/useWebSocket';
 import { useNavigate } from 'react-router-dom';
 import './Header.css';
 
@@ -15,59 +14,49 @@ const Header = () => {
     const currentUser = AuthService.getCurrentUser();
     const dropdownRef = useRef(null);
 
-    useEffect(() => {
+    // Load initial notifications
+    const loadNotifications = useCallback(async () => {
         if (!currentUser) return;
-
-        console.log("Header mounted for user:", currentUser);
-
-        // Load initial notifications
-        loadNotifications();
-
-        // Setup WebSocket
-        const socket = new SockJS('http://localhost:8080/ws');
-        const stompClient = Stomp.over(socket);
-
-        stompClient.connect({}, () => {
-            console.log("WebSocket Connected");
-            const subscriptionPath = `/topic/notifications/${currentUser.id}`;
-            console.log("Subscribing to:", subscriptionPath);
-
-            // Subscribe to user-specific channel
-            stompClient.subscribe(subscriptionPath, (message) => {
-                console.log("Received message:", message.body);
-                const notification = JSON.parse(message.body);
-                setNotifications(prev => [notification, ...prev]);
-                setUnreadCount(prev => prev + 1);
-                // Play sound or show toast if needed
-            });
-        }, (error) => {
-            console.error('STOMP error', error);
-        });
-
-        return () => {
-            if (stompClient && stompClient.connected) {
-                stompClient.disconnect();
-            }
-        };
-    }, []);
-
-    const loadNotifications = async () => {
         try {
             const res = await NotificationService.getNotifications();
             setNotifications(res.data);
-            const count = res.data.filter(n => !n.read).length;
+            const count = res.data.filter(n => !n.isRead).length;
             setUnreadCount(count);
         } catch (error) {
             console.error("Failed to load notifications", error);
         }
-    };
+    }, [currentUser]);
+
+    useEffect(() => {
+        loadNotifications();
+    }, [loadNotifications]);
+
+    // Listen for notification-read events from other components (e.g., Notifications page)
+    useEffect(() => {
+        const handleNotificationRead = () => loadNotifications();
+        window.addEventListener('notification-read', handleNotificationRead);
+        return () => window.removeEventListener('notification-read', handleNotificationRead);
+    }, [loadNotifications]);
+
+    // WebSocket: real-time notifications
+    const topic = useMemo(() => {
+        if (!currentUser) return null;
+        return `/topic/notifications/${currentUser.id}`;
+    }, [currentUser]);
+
+    const handleNewNotification = useCallback((notification) => {
+        setNotifications(prev => [notification, ...prev]);
+        setUnreadCount(prev => prev + 1);
+    }, []);
+
+    useWebSocket(topic, handleNewNotification);
 
     const handleNotificationClick = async (notification) => {
-        if (!notification.read) {
+        if (!notification.isRead) {
             try {
                 await NotificationService.markAsRead(notification.id);
                 setNotifications(prev => prev.map(n =>
-                    n.id === notification.id ? { ...n, read: true } : n
+                    n.id === notification.id ? { ...n, isRead: true } : n
                 ));
                 setUnreadCount(prev => Math.max(0, prev - 1));
             } catch (error) {
@@ -76,8 +65,7 @@ const Header = () => {
         }
 
         setShowDropdown(false);
-        // Redirect logic based on type or just to complaints
-        navigate('/admin/complaints');
+        navigate('/admin/notifications');
     };
 
     // Close dropdown when clicking outside
@@ -103,7 +91,7 @@ const Header = () => {
                     >
                         <Bell size={24} />
                         {unreadCount > 0 && (
-                            <span className="notification-badge">{unreadCount}</span>
+                            <span className="notification-badge">{unreadCount > 99 ? '99+' : unreadCount}</span>
                         )}
                     </div>
 
@@ -116,10 +104,10 @@ const Header = () => {
                                 {notifications.length === 0 ? (
                                     <div className="no-notifications">No notifications</div>
                                 ) : (
-                                    notifications.map(notification => (
+                                    notifications.slice(0, 10).map(notification => (
                                         <div
                                             key={notification.id}
-                                            className={`notification-item ${notification.read ? 'read' : 'unread'}`}
+                                            className={`notification-item ${notification.isRead ? 'read' : 'unread'}`}
                                             onClick={() => handleNotificationClick(notification)}
                                         >
                                             <div className="notification-message">{notification.message}</div>
@@ -135,8 +123,7 @@ const Header = () => {
                 </div>
 
                 <div className="user-profile">
-                    {/* Can replicate user info here if needed, or keeping it minimal */}
-                    <span>{currentUser.username}</span>
+                    <span>{currentUser?.username || 'Admin'}</span>
                 </div>
             </div>
         </header>

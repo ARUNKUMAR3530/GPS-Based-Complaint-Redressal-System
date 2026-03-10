@@ -11,4 +11,10 @@ public interface AdminRepository extends JpaRepository<Admin, Long> {
     Optional<Admin> findByUsername(String username);
 
     Boolean existsByUsername(String username);
+
+    java.util.List<Admin> findByMunicipality(com.complaint.redressal.model.Municipality municipality);
+
+    java.util.List<Admin> findByDepartment(com.complaint.redressal.model.Department department);
+
+    java.util.List<Admin> findByRole(String role);
 }

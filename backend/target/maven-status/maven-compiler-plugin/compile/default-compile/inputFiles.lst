@@ -14,8 +14,10 @@ D:\froject_file\final\backend\src\main\java\com\complaint\redressal\model\Compla
 D:\froject_file\final\backend\src\main\java\com\complaint\redressal\model\Department.java
 D:\froject_file\final\backend\src\main\java\com\complaint\redressal\model\Municipality.java
 D:\froject_file\final\backend\src\main\java\com\complaint\redressal\model\Notification.java
+D:\froject_file\final\backend\src\main\java\com\complaint\redressal\model\NotificationType.java
 D:\froject_file\final\backend\src\main\java\com\complaint\redressal\model\StatusHistory.java
 D:\froject_file\final\backend\src\main\java\com\complaint\redressal\model\User.java
+D:\froject_file\final\backend\src\main\java\com\complaint\redressal\model\UserNotification.java
 D:\froject_file\final\backend\src\main\java\com\complaint\redressal\payload\AdminSignupRequest.java
 D:\froject_file\final\backend\src\main\java\com\complaint\redressal\payload\AdminWorkStatus.java
 D:\froject_file\final\backend\src\main\java\com\complaint\redressal\payload\ChangePasswordRequest.java
@@ -30,6 +32,7 @@ D:\froject_file\final\backend\src\main\java\com\complaint\redressal\repository\D
 D:\froject_file\final\backend\src\main\java\com\complaint\redressal\repository\MunicipalityRepository.java
 D:\froject_file\final\backend\src\main\java\com\complaint\redressal\repository\NotificationRepository.java
 D:\froject_file\final\backend\src\main\java\com\complaint\redressal\repository\StatusHistoryRepository.java
+D:\froject_file\final\backend\src\main\java\com\complaint\redressal\repository\UserNotificationRepository.java
 D:\froject_file\final\backend\src\main\java\com\complaint\redressal\repository\UserRepository.java
 D:\froject_file\final\backend\src\main\java\com\complaint\redressal\security\jwt\AuthEntryPointJwt.java
 D:\froject_file\final\backend\src\main\java\com\complaint\redressal\security\jwt\AuthTokenFilter.java
@@ -39,3 +42,4 @@ D:\froject_file\final\backend\src\main\java\com\complaint\redressal\security\ser
 D:\froject_file\final\backend\src\main\java\com\complaint\redressal\security\WebSecurityConfig.java
 D:\froject_file\final\backend\src\main\java\com\complaint\redressal\service\ComplaintService.java
 D:\froject_file\final\backend\src\main\java\com\complaint\redressal\service\FileStorageService.java
+D:\froject_file\final\backend\src\main\java\com\complaint\redressal\service\NotificationService.java

@@ -4,40 +4,34 @@ import AuthService from '../services/auth.service';
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [currentUser, setCurrentUser] = useState(undefined);
-    const [loading, setLoading] = useState(true);
+    // Initialize directly from localStorage — no async gap, no flash
+    const [currentUser, setCurrentUser] = useState(() => AuthService.getCurrentUser());
+    const [loading, setLoading] = useState(false); // No async loading needed
 
+    // Re-sync if localStorage changes in another tab
     useEffect(() => {
-        const user = AuthService.getCurrentUser();
-        if (user) {
-            setCurrentUser(user);
-        }
-        setLoading(false);
+        const syncUser = () => {
+            setCurrentUser(AuthService.getCurrentUser());
+        };
+        window.addEventListener('storage', syncUser);
+        return () => window.removeEventListener('storage', syncUser);
     }, []);
 
     const login = async (username, password) => {
-        try {
-            const data = await AuthService.login(username, password);
-            setCurrentUser(data);
-            return data;
-        } catch (error) {
-            throw error;
-        }
+        const data = await AuthService.login(username, password);
+        setCurrentUser(data);
+        return data;
     };
 
     const adminLogin = async (username, password) => {
-        try {
-            const data = await AuthService.adminLogin(username, password);
-            setCurrentUser(data);
-            return data;
-        } catch (error) {
-            throw error;
-        }
+        const data = await AuthService.adminLogin(username, password);
+        setCurrentUser(data);
+        return data;
     };
 
     const logout = () => {
         AuthService.logout();
-        setCurrentUser(undefined);
+        setCurrentUser(null);
     };
 
     return (

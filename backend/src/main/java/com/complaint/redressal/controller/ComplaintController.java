@@ -157,6 +157,10 @@ public class ComplaintController {
                                 .orElseThrow(() -> new RuntimeException("Admin not found"));
 
                 Complaint complaint = complaintService.updateStatus(id, status, remarks, admin);
-                return ResponseEntity.ok(complaint);
+
+                boolean isSuperAdmin = (admin.getDepartment() == null && admin.getMunicipality() == null);
+                boolean maskUser = !isSuperAdmin;
+
+                return ResponseEntity.ok(ComplaintDTO.fromEntity(complaint, maskUser));
         }
 }
