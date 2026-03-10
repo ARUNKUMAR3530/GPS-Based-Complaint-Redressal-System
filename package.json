@@ -8,6 +8,7 @@
     "install:all": "npm run install:frontend && npm run install:backend",
     "install:frontend": "cd frontend && npm install",
     "install:backend": "cd backend && mvnw -Dmaven.multiModuleProjectDirectory=. clean install -DskipTests",
+    "build": "cd frontend && npm install && npm run build",
     "start:backend": "cd backend && mvnw -Dmaven.multiModuleProjectDirectory=. spring-boot:run",
     "start:frontend": "cd frontend && npm run dev",
     "dev": "concurrently -n \"BACKEND,FRONTEND\" -c \"bgBlue.bold,bgMagenta.bold\" \"npm run start:backend\" \"npm run start:frontend\""

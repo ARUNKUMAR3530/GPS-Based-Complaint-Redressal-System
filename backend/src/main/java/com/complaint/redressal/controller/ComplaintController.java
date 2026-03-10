@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import com.complaint.redressal.payload.ComplaintDTO;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -86,23 +88,18 @@ public class ComplaintController {
                                         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
                                         UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
 
+                                        boolean maskUser = false;
                                         if (userDetails.getAuthorities().stream()
                                                         .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
-                                                // Check if District Admin
                                                 Admin admin = adminRepository.findById(userDetails.getId())
                                                                 .orElse(null);
                                                 if (admin != null) {
                                                         boolean isSuperAdmin = (admin.getDepartment() == null
                                                                         && admin.getMunicipality() == null);
-                                                        if (!isSuperAdmin && complaint.getUser() != null) {
-                                                                // Mask
-                                                                User u = complaint.getUser();
-                                                                u.setMobile("******");
-                                                                u.setEmail("******");
-                                                        }
+                                                        maskUser = !isSuperAdmin;
                                                 }
                                         }
-                                        return ResponseEntity.ok(complaint);
+                                        return ResponseEntity.ok(ComplaintDTO.fromEntity(complaint, maskUser));
                                 })
                                 .orElse(ResponseEntity.notFound().build());
         }
@@ -131,7 +128,7 @@ public class ComplaintController {
 
         @GetMapping("/admin/complaints")
         @PreAuthorize("hasRole('ADMIN')")
-        public List<Complaint> getAllComplaints() {
+        public List<ComplaintDTO> getAllComplaints() {
                 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
                 UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
                 Admin admin = adminRepository.findById(userDetails.getId())
@@ -140,15 +137,11 @@ public class ComplaintController {
                 List<Complaint> complaints = complaintService.getComplaintsForAdmin(admin);
 
                 boolean isSuperAdmin = (admin.getDepartment() == null && admin.getMunicipality() == null);
-                if (!isSuperAdmin) {
-                        complaints.forEach(c -> {
-                                if (c.getUser() != null) {
-                                        c.getUser().setMobile("******");
-                                        c.getUser().setEmail("******");
-                                }
-                        });
-                }
-                return complaints;
+                boolean maskUser = !isSuperAdmin;
+
+                return complaints.stream()
+                                .map(c -> ComplaintDTO.fromEntity(c, maskUser))
+                                .collect(Collectors.toList());
         }
 
         @PutMapping("/admin/complaints/{id}/status")

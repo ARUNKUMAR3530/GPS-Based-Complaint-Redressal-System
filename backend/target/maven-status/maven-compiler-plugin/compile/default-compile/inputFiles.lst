@@ -19,6 +19,7 @@ D:\froject_file\final\backend\src\main\java\com\complaint\redressal\model\User.j
 D:\froject_file\final\backend\src\main\java\com\complaint\redressal\payload\AdminSignupRequest.java
 D:\froject_file\final\backend\src\main\java\com\complaint\redressal\payload\AdminWorkStatus.java
 D:\froject_file\final\backend\src\main\java\com\complaint\redressal\payload\ChangePasswordRequest.java
+D:\froject_file\final\backend\src\main\java\com\complaint\redressal\payload\ComplaintDTO.java
 D:\froject_file\final\backend\src\main\java\com\complaint\redressal\payload\JwtResponse.java
 D:\froject_file\final\backend\src\main\java\com\complaint\redressal\payload\LoginRequest.java
 D:\froject_file\final\backend\src\main\java\com\complaint\redressal\payload\MessageResponse.java

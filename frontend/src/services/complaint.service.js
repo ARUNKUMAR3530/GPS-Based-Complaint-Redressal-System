@@ -34,13 +34,18 @@ const deleteComplaint = (id) => {
     return api.delete(`/complaints/${id}`);
 };
 
+const getComplainantDetails = (id) => {
+    return api.get(`/admin/complaints/${id}/complainant-details`);
+};
+
 const ComplaintService = {
     getAllComplaints,
     getComplaintById,
     createComplaint,
     getAllComplaintsAdmin,
     updateStatus,
-    deleteComplaint
+    deleteComplaint,
+    getComplainantDetails
 };
 
 export default ComplaintService;
