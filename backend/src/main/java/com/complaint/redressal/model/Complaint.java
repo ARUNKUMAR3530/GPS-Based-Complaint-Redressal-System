@@ -55,6 +55,9 @@ public class Complaint {
     @OneToMany(mappedBy = "complaint", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<StatusHistory> statusHistory;
 
+    @OneToMany(mappedBy = "complaint", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserNotification> userNotifications;
+
     @PrePersist
     protected void onCreate() {
         createdAt = Timestamp.from(Instant.now());
