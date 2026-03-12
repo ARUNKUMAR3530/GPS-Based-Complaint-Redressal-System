@@ -25,6 +25,9 @@ public class ComplaintService {
     private FileStorageService fileStorageService;
 
     @Autowired
+    private com.cloudinary.Cloudinary cloudinary;
+
+    @Autowired
     private MunicipalityRepository municipalityRepository;
 
     @Autowired
@@ -46,8 +49,13 @@ public class ComplaintService {
         complaint.setUser(user);
 
         if (file != null && !file.isEmpty()) {
-            String fileName = fileStorageService.save(file);
-            complaint.setImageUrl(fileName);
+            try {
+                java.util.Map uploadResult = cloudinary.uploader().upload(file.getBytes(), com.cloudinary.utils.ObjectUtils.emptyMap());
+                String imageUrl = uploadResult.get("url").toString();
+                complaint.setImageUrl(imageUrl);
+            } catch (java.io.IOException e) {
+                throw new RuntimeException("Image upload to Cloudinary failed", e);
+            }
         }
 
         // Auto-assign department

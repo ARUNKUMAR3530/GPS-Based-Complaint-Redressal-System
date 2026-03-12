@@ -20,6 +20,7 @@ com\complaint\redressal\repository\DepartmentRepository.class
 com\complaint\redressal\repository\NotificationRepository.class
 com\complaint\redressal\repository\UserRepository.class
 com\complaint\redressal\exception\GlobalExceptionHandler.class
+com\complaint\redressal\config\CloudinaryConfig.class
 com\complaint\redressal\payload\UpdateStatusRequest.class
 com\complaint\redressal\model\User.class
 com\complaint\redressal\service\ComplaintService.class
