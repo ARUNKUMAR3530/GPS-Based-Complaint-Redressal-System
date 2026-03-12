@@ -3,6 +3,7 @@ package com.complaint.redressal.model;
 import jakarta.persistence.*;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.List;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -47,6 +48,12 @@ public class Complaint {
 
     private Timestamp createdAt;
     private Timestamp updatedAt;
+
+    @OneToMany(mappedBy = "complaint", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Notification> notifications;
+
+    @OneToMany(mappedBy = "complaint", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<StatusHistory> statusHistory;
 
     @PrePersist
     protected void onCreate() {
