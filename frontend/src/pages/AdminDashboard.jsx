@@ -34,6 +34,12 @@ let DefaultIcon = L.icon({
 });
 L.Marker.prototype.options.icon = DefaultIcon;
 
+const isDocumentUrl = (url) => {
+    if (!url) return false;
+    const lower = url.toLowerCase();
+    return lower.includes('.pdf') || lower.includes('.doc') || lower.includes('raw/upload');
+};
+
 const AdminDashboard = () => {
     const [complaints, setComplaints] = useState([]);
     const [filterStatus, setFilterStatus] = useState('ALL');
@@ -258,14 +264,18 @@ const AdminDashboard = () => {
                                     </td>
                                     <td>
                                         {complaint.imageUrl ? (
-                                            <div
-                                                className="image-link"
-                                                onClick={() => setSelectedImage(complaint)}
-                                            >
-                                                <ImageIcon size={20} /> View
-                                            </div>
+                                            isDocumentUrl(complaint.imageUrl) ? (
+                                                <a href={complaint.imageUrl} target="_blank" rel="noopener noreferrer"
+                                                   style={{ color: '#1e40af', fontWeight: 600, fontSize: '0.85rem' }}>
+                                                    📄 Document
+                                                </a>
+                                            ) : (
+                                                <div className="image-link" onClick={() => setSelectedImage(complaint)}>
+                                                    <ImageIcon size={20} /> View
+                                                </div>
+                                            )
                                         ) : (
-                                            <span className="text-muted" style={{ fontSize: '0.8rem', color: '#9ca3af' }}>No Image</span>
+                                            <span style={{ fontSize: '0.8rem', color: '#9ca3af' }}>No File</span>
                                         )}
                                     </td>
                                     <td>

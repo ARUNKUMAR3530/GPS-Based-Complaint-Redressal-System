@@ -197,9 +197,11 @@ const UserDashboard = () => {
                                             const mins = Math.floor(remaining / 1000 / 60);
                                             const secs = Math.floor((remaining / 1000) % 60);
                                             return remaining > 0 ? (
-                                                <button className="delete-btn" onClick={(e) => handleDeleteComplaint(complaint.id, e)} title="Delete within 7 minutes">
+                                                <button className="delete-btn" onClick={(e) => handleDeleteComplaint(complaint.id, e)}>
                                                     <Trash2 size={16} />
-                                                    <span style={{ fontSize: '0.72rem', fontVariantNumeric: 'tabular-nums' }}>{mins}:{secs.toString().padStart(2,'0')}</span>
+                                                    <span style={{ fontSize: '0.72rem', fontVariantNumeric: 'tabular-nums' }}>
+                                                        {mins}:{secs.toString().padStart(2, '0')}
+                                                    </span>
                                                 </button>
                                             ) : null;
                                         })()}
