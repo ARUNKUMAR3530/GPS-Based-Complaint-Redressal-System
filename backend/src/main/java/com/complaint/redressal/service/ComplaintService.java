@@ -22,9 +22,6 @@ public class ComplaintService {
     private StatusHistoryRepository statusHistoryRepository;
 
     @Autowired
-    private FileStorageService fileStorageService;
-
-    @Autowired
     private com.cloudinary.Cloudinary cloudinary;
 
     @Autowired
@@ -50,7 +47,7 @@ public class ComplaintService {
 
         if (file != null && !file.isEmpty()) {
             try {
-                java.util.Map uploadResult = cloudinary.uploader().upload(file.getBytes(), com.cloudinary.utils.ObjectUtils.emptyMap());
+                java.util.Map<?, ?> uploadResult = cloudinary.uploader().upload(file.getBytes(), com.cloudinary.utils.ObjectUtils.emptyMap());
                 String imageUrl = uploadResult.get("url").toString();
                 complaint.setImageUrl(imageUrl);
             } catch (java.io.IOException e) {
