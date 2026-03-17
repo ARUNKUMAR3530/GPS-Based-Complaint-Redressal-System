@@ -342,7 +342,7 @@ const AdminDashboard = () => {
                         <h3>Complaint Evidence</h3>
                         <div className="full-image-container">
                             <img
-                                src={selectedImage.imageUrl ? `/uploads/${selectedImage.imageUrl}` : '/placeholder-image.png'}
+                                src={selectedImage.imageUrl ? selectedImage.imageUrl : '/placeholder-image.png'}
                                 alt="Complaint Evidence"
                                 className="full-image"
                                 onError={(e) => {

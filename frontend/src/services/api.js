@@ -27,13 +27,23 @@ api.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response && error.response.status === 401) {
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            const currentPath = window.location.pathname;
-            const isAdminRoute = currentPath.startsWith('/admin');
-            const loginPath = isAdminRoute ? '/admin/login?expired=true' : '/login?expired=true';
-            if (!currentPath.includes('/login')) {
-                window.location.href = loginPath;
+            // Only redirect if it's NOT a login/register attempt
+            const url = error.config?.url || '';
+            const isAuthCall = url.includes('/auth/login') || 
+                               url.includes('/auth/register') ||
+                               url.includes('/auth/admin');
+            
+            if (!isAuthCall) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                const currentPath = window.location.pathname;
+                const isAdminRoute = currentPath.startsWith('/admin');
+                const loginPath = isAdminRoute 
+                    ? '/admin/login?expired=true' 
+                    : '/login?expired=true';
+                if (!currentPath.includes('/login')) {
+                    window.location.href = loginPath;
+                }
             }
         }
         return Promise.reject(error);

@@ -106,7 +106,7 @@ const ComplaintDetailsAdmin = () => {
                             </h3>
                             <div className="evidence-image-container">
                                 <img
-                                    src={`/uploads/${complaint.imageUrl}`}
+                                    src={complaint.imageUrl}
                                     alt="Evidence"
                                     className="evidence-image"
                                 />

@@ -27,10 +27,15 @@ const Notifications = () => {
             } else {
                 response = await NotificationService.getNotifications();
             }
-            setNotifications(response.data);
+            setNotifications(response.data || []); // <-- add || [] fallback
         } catch (error) {
-            console.error("Error fetching notifications:", error);
-            toast.error("Failed to load notifications");
+            // Don't crash — just show empty state
+            console.error('Notifications error:', error);
+            setNotifications([]);
+            // Only show toast if it's not a 401 (401 is handled by interceptor)
+            if (error.response?.status !== 401) {
+                toast.error("Failed to load notifications");
+            }
         } finally {
             setLoading(false);
         }
