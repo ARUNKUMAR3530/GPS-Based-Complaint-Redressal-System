@@ -9,7 +9,8 @@ import {
     LogOut,
     ShieldCheck,
     X,
-    Bell
+    Bell,
+    PieChart
 } from 'lucide-react';
 import './Sidebar.css';
 import NotificationService from '../services/notification.service';
@@ -120,6 +121,10 @@ const Sidebar = ({ isOpen, onClose }) => {
                             <NavLink to="/admin/supervision" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
                                 <Activity size={20} />
                                 <span>Work Status</span>
+                            </NavLink>
+                            <NavLink to="/admin/analytics" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
+                                <PieChart size={20} />
+                                <span>Analytics</span>
                             </NavLink>
                             <NavLink to="/admin/users" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
                                 <Users size={20} />

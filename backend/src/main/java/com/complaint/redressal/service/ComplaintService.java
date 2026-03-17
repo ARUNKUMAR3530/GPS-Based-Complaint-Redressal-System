@@ -47,7 +47,16 @@ public class ComplaintService {
 
         if (file != null && !file.isEmpty()) {
             try {
-                java.util.Map<?, ?> uploadResult = cloudinary.uploader().upload(file.getBytes(), com.cloudinary.utils.ObjectUtils.emptyMap());
+                String contentType = file.getContentType();
+                java.util.Map<?, ?> uploadOptions = com.cloudinary.utils.ObjectUtils.emptyMap();
+                
+                if ("application/pdf".equals(contentType) || 
+                    "application/msword".equals(contentType) || 
+                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document".equals(contentType)) {
+                    uploadOptions = com.cloudinary.utils.ObjectUtils.asMap("resource_type", "raw");
+                }
+                
+                java.util.Map<?, ?> uploadResult = cloudinary.uploader().upload(file.getBytes(), uploadOptions);
                 String imageUrl = uploadResult.get("url").toString();
                 complaint.setImageUrl(imageUrl);
             } catch (java.io.IOException e) {
@@ -109,9 +118,15 @@ public class ComplaintService {
             double distSalem = calculateDistance(lat, lon, 11.6643, 78.1460);
 
             String city = "Chennai"; // Default
-            if (distCoimbatore < distChennai && distCoimbatore < distSalem) {
+            double MAX_RADIUS_KM = 60.0;
+            
+            double minDist = Math.min(distChennai, Math.min(distCoimbatore, distSalem));
+            
+            if (minDist > MAX_RADIUS_KM) {
+                city = "Chennai";
+            } else if (distCoimbatore == minDist) {
                 city = "Coimbatore";
-            } else if (distSalem < distChennai && distSalem < distCoimbatore) {
+            } else if (distSalem == minDist) {
                 city = "Salem";
             }
 
@@ -127,7 +142,7 @@ public class ComplaintService {
         double theta = lon1 - lon2;
         double dist = Math.sin(Math.toRadians(lat1)) * Math.sin(Math.toRadians(lat2))
                 + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) * Math.cos(Math.toRadians(theta));
-        dist = Math.acos(dist);
+        dist = Math.acos(Math.max(-1.0, Math.min(1.0, dist)));
         dist = Math.toDegrees(dist);
         dist = dist * 60 * 1.1515;
         return (dist * 1.609344); // Kilometers

@@ -62,10 +62,28 @@ const LodgeComplaint = () => {
                     const { latitude, longitude } = pos.coords;
                     setPosition({ lat: latitude, lng: longitude });
                     toast.success("Location fetched!");
+                    
+                    if (latitude < 8.0 || latitude > 13.6 || longitude < 76.2 || longitude > 80.4) {
+                        toast.warn("Your location appears outside Tamil Nadu. Complaint will be assigned to nearest municipality.", { autoClose: 6000 });
+                    }
                 },
-                (err) => {
-                    toast.error("Error fetching location: " + err.message);
-                }
+                (error) => {
+                    switch (error.code) {
+                        case error.PERMISSION_DENIED:
+                            toast.error("GPS permission denied. Please allow location access and try again.");
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            toast.error("Location unavailable. Try again.");
+                            break;
+                        case error.TIMEOUT:
+                            toast.error("GPS timed out. Please try again.");
+                            break;
+                        default:
+                            toast.error("Failed to get location. Please try again.");
+                    }
+                    if (typeof setGpsStatus === 'function') setGpsStatus('error');
+                },
+                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
             );
         } else {
             toast.error("Geolocation is not supported by this browser.");

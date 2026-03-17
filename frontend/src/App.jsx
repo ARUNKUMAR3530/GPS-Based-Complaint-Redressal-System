@@ -18,6 +18,7 @@ import UserManagement from './pages/UserManagement';
 import ComplaintDetailsAdmin from './pages/ComplaintDetailsAdmin';
 import ChangePassword from './pages/ChangePassword';
 import Notifications from './pages/Notifications';
+import SuperAdminAnalytics from './pages/SuperAdminAnalytics';
 
 // Layout for User pages (Navbar + Container)
 const UserLayout = ({ children }) => (
@@ -55,6 +56,7 @@ function App() {
                             <Route path="dashboard" element={<AdminDashboard />} />
                             <Route path="complaints" element={<AdminDashboard />} />
                             <Route path="supervision" element={<Supervision />} />
+                            <Route path="analytics" element={<SuperAdminAnalytics />} />
                             <Route path="users" element={<UserManagement />} />
                             <Route path="notifications" element={<Notifications />} />
                             <Route path="complaints/:id/details" element={<ComplaintDetailsAdmin />} />

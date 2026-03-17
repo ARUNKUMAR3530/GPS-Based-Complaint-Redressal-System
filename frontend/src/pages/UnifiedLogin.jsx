@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { toast } from 'react-toastify';
 import { User, Lock, Building2, ShieldCheck, Loader2 } from 'lucide-react';
@@ -13,6 +13,7 @@ const UnifiedLogin = () => {
 
     const { login, adminLogin } = useContext(AuthContext);
     const navigate = useNavigate();
+    const sessionExpired = new URLSearchParams(useLocation().search).get('expired') === 'true';
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -29,7 +30,7 @@ const UnifiedLogin = () => {
                 navigate('/dashboard');
             }
         } catch (error) {
-            toast.error("Login Failed: " + (error.response?.data?.message || "Invalid credentials"));
+            toast.error(error.response?.data?.message || "Login Failed: Invalid credentials");
         } finally {
             setLoading(false);
         }
@@ -59,6 +60,12 @@ const UnifiedLogin = () => {
                         Official
                     </button>
                 </div>
+
+                {sessionExpired && (
+                    <div style={{ background: '#fef3c7', border: '1px solid #fcd34d', borderRadius: '8px', padding: '0.75rem 1rem', marginBottom: '1.25rem', fontSize: '0.875rem', color: '#92400e', fontWeight: 500 }}>
+                        ⚠️ Your session has expired. Please log in again.
+                    </div>
+                )}
 
                 <form onSubmit={handleSubmit}>
                     <div className="input-group">

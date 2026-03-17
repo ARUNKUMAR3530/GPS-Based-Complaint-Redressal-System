@@ -60,8 +60,8 @@ public class AuthController {
                                 .collect(Collectors.toList());
 
                 if (!roles.contains("ROLE_USER")) {
-                        return ResponseEntity.badRequest().body(new MessageResponse(
-                                        "Error: Unauthorized. Please use the Official Login page."));
+                        return ResponseEntity.status(401).body(new MessageResponse(
+                                        "Error: Unauthorized. This account is not a Citizen account."));
                 }
 
                 return ResponseEntity.ok(new JwtResponse(jwt,
@@ -88,7 +88,7 @@ public class AuthController {
                                 .collect(Collectors.toList());
 
                 if (!roles.contains("ROLE_ADMIN")) {
-                        return ResponseEntity.badRequest().body(new MessageResponse("Error: Not authorized as Admin"));
+                        return ResponseEntity.status(401).body(new MessageResponse("Error: Unauthorized. This account is not an Officer account."));
                 }
 
                 String jwt = jwtUtils.generateJwtToken(authentication);
@@ -208,6 +208,23 @@ public class AuthController {
                                         status.append("Created ").append(username).append(". ");
                                 }
                         });
+                }
+
+                // Reset Citizen
+                if (userRepository.findByUsername("arunkumar").isPresent()) {
+                        User user = userRepository.findByUsername("arunkumar").get();
+                        user.setPassword(encoder.encode("password123"));
+                        userRepository.save(user);
+                        status.append("Citizen 'arunkumar' password reset to 'password123'. ");
+                } else {
+                        User user = new User();
+                        user.setUsername("arunkumar");
+                        user.setPassword(encoder.encode("password123"));
+                        user.setEmail("arunkumar@example.com");
+                        user.setFullName("Arun Kumar");
+                        user.setMobile("9876543210");
+                        userRepository.save(user);
+                        status.append("Citizen 'arunkumar' created with password 'password123'. ");
                 }
 
                 return ResponseEntity.ok(status.toString());

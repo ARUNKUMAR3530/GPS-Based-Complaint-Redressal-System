@@ -3,6 +3,7 @@ package com.complaint.redressal.controller;
 import com.complaint.redressal.model.*;
 import com.complaint.redressal.payload.UpdateStatusRequest;
 import com.complaint.redressal.repository.AdminRepository;
+import com.complaint.redressal.repository.StatusHistoryRepository;
 import com.complaint.redressal.repository.UserRepository;
 import com.complaint.redressal.security.services.UserDetailsImpl;
 import com.complaint.redressal.payload.MessageResponse;
@@ -31,6 +32,9 @@ public class ComplaintController {
 
         @Autowired
         private AdminRepository adminRepository;
+
+        @Autowired
+        private StatusHistoryRepository statusHistoryRepository;
 
         @PostMapping("/complaints")
         @PreAuthorize("hasRole('USER')")
@@ -100,6 +104,19 @@ public class ComplaintController {
 
                 return complaintService.getComplaintById(id)
                                 .map(complaint -> ResponseEntity.ok(complaint.getUser()))
+                                .orElse(ResponseEntity.notFound().build());
+        }
+
+        @GetMapping("/complaints/{id}/history")
+        @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+        public ResponseEntity<?> getStatusHistory(@PathVariable Long id,
+                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+                return complaintService.getComplaintById(id)
+                                .map(complaint -> {
+                                        List<StatusHistory> history = statusHistoryRepository
+                                                        .findByComplaintOrderByTimestampAsc(complaint);
+                                        return ResponseEntity.ok(history);
+                                })
                                 .orElse(ResponseEntity.notFound().build());
         }
 

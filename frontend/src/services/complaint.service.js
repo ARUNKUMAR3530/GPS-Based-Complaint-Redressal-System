@@ -34,6 +34,10 @@ const getComplainantDetails = (id) => {
     return api.get(`/admin/complaints/${id}/complainant-details`);
 };
 
+const getStatusHistory = (id) => {
+    return api.get(`/complaints/${id}/history`);
+};
+
 const ComplaintService = {
     getAllComplaints,
     getComplaintById,
@@ -41,7 +45,8 @@ const ComplaintService = {
     getAllComplaintsAdmin,
     updateStatus,
     deleteComplaint,
-    getComplainantDetails
+    getComplainantDetails,
+    getStatusHistory
 };
 
 export default ComplaintService;
