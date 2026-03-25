@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import com.complaint.redressal.payload.ComplaintDTO;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api")
 public class ComplaintController {

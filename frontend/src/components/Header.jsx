@@ -18,12 +18,16 @@ const Header = () => {
     const loadNotifications = useCallback(async () => {
         if (!currentUser) return;
         try {
-            const res = await NotificationService.getNotifications();
+            const isAdmin = currentUser.roles?.some(r =>
+                ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_MUNICIPALITY_ADMIN'].includes(r)
+            );
+            const res = isAdmin
+                ? await NotificationService.getNotifications()
+                : await NotificationService.getUserNotifications();
             setNotifications(res.data);
-            const count = res.data.filter(n => !n.isRead).length;
-            setUnreadCount(count);
+            setUnreadCount(res.data.filter(n => !n.isRead).length);
         } catch (error) {
-            console.error("Failed to load notifications", error);
+            console.error(error);
         }
     }, [currentUser]);
 

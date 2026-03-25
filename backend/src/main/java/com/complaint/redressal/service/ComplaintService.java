@@ -49,10 +49,11 @@ public class ComplaintService {
             try {
                 String contentType = file.getContentType();
                 java.util.Map<?, ?> uploadOptions = com.cloudinary.utils.ObjectUtils.emptyMap();
-                
-                if ("application/pdf".equals(contentType) || 
-                    "application/msword".equals(contentType) || 
-                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document".equals(contentType)) {
+
+                if (contentType != null && (
+                        contentType.equals("application/pdf") ||
+                        contentType.equals("application/msword") ||
+                        contentType.contains("wordprocessingml"))) {
                     uploadOptions = com.cloudinary.utils.ObjectUtils.asMap("resource_type", "raw");
                 }
                 

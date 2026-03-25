@@ -38,6 +38,13 @@ const getStatusHistory = (id) => {
     return api.get(`/complaints/${id}/history`);
 };
 
+// Super-admin endpoint
+const replyToRemark = (complaintId, message) => {
+    return api.post('/super-admin/admins/reply', { message }, {
+        params: { complaintId }
+    });
+};
+
 const ComplaintService = {
     getAllComplaints,
     getComplaintById,
@@ -49,4 +56,4 @@ const ComplaintService = {
     getStatusHistory
 };
 
-export default ComplaintService;
+export default { ...ComplaintService, replyToRemark };

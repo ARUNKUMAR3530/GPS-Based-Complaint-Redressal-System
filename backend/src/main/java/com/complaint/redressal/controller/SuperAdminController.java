@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/super-admin")
 public class SuperAdminController {
@@ -285,13 +284,13 @@ public class SuperAdminController {
     }
 
     @GetMapping("/municipalities")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN', 'MUNICIPALITY_ADMIN')")
     public ResponseEntity<?> getAllMunicipalities() {
         return ResponseEntity.ok(municipalityRepository.findAll());
     }
 
     @GetMapping("/departments")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN', 'MUNICIPALITY_ADMIN')")
     public ResponseEntity<?> getAllDepartments() {
         return ResponseEntity.ok(departmentRepository.findAll());
     }

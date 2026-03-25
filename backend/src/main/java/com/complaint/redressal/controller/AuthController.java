@@ -20,15 +20,12 @@ import jakarta.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
         @Autowired
         AuthenticationManager authenticationManager;
 
-        @Autowired
-        com.complaint.redressal.repository.MunicipalityRepository municipalityRepository;
 
         @Autowired
         UserRepository userRepository;
@@ -162,77 +159,4 @@ public class AuthController {
                 }
         }
 
-        @GetMapping("/debug-reset")
-        public ResponseEntity<?> debugReset() {
-                StringBuilder status = new StringBuilder();
-
-                // Reset Super Admin
-                if (adminRepository.findByUsername("suberAD").isPresent()) {
-                        com.complaint.redressal.model.Admin admin = adminRepository.findByUsername("suberAD").get();
-                        admin.setPassword(encoder.encode("suber24"));
-                        admin.setRole(com.complaint.redressal.model.Admin.ROLE_SUPER_ADMIN);
-                        adminRepository.save(admin);
-                        status.append("Admin 'suberAD' reset to ROLE_SUPER_ADMIN. ");
-                } else {
-                        com.complaint.redressal.model.Admin admin = new com.complaint.redressal.model.Admin();
-                        admin.setUsername("suberAD");
-                        admin.setPassword(encoder.encode("suber24"));
-                        admin.setRole(com.complaint.redressal.model.Admin.ROLE_SUPER_ADMIN);
-                        adminRepository.save(admin);
-                        status.append("Admin 'suberAD' created with ROLE_SUPER_ADMIN. ");
-                }
-
-                // Reset Municipality Admins
-                String[] munAdmins = { "admin_chn:Chennai", "admin_cbe:Coimbatore", "admin_slm:Salem" };
-                for (String entry : munAdmins) {
-                        String[] parts = entry.split(":");
-                        String username = parts[0];
-                        String munName = parts[1];
-
-                        municipalityRepository.findByName(munName).ifPresent(mun -> {
-                                if (adminRepository.findByUsername(username).isPresent()) {
-                                        com.complaint.redressal.model.Admin admin = adminRepository
-                                                        .findByUsername(username).get();
-                                        admin.setPassword(encoder.encode("admin123"));
-                                        admin.setRole(com.complaint.redressal.model.Admin.ROLE_MUNICIPALITY_ADMIN);
-                                        admin.setMunicipality(mun);
-                                        adminRepository.save(admin);
-                                        status.append("Reset ").append(username).append(". ");
-                                } else {
-                                        com.complaint.redressal.model.Admin admin = new com.complaint.redressal.model.Admin();
-                                        admin.setUsername(username);
-                                        admin.setPassword(encoder.encode("admin123"));
-                                        admin.setRole(com.complaint.redressal.model.Admin.ROLE_MUNICIPALITY_ADMIN);
-                                        admin.setMunicipality(mun);
-                                        adminRepository.save(admin);
-                                        status.append("Created ").append(username).append(". ");
-                                }
-                        });
-                }
-
-                // Reset Citizen
-                if (userRepository.findByUsername("arunkumar").isPresent()) {
-                        User user = userRepository.findByUsername("arunkumar").get();
-                        user.setPassword(encoder.encode("password123"));
-                        userRepository.save(user);
-                        status.append("Citizen 'arunkumar' password reset to 'password123'. ");
-                } else {
-                        User user = new User();
-                        user.setUsername("arunkumar");
-                        user.setPassword(encoder.encode("password123"));
-                        user.setEmail("arunkumar@example.com");
-                        user.setFullName("Arun Kumar");
-                        user.setMobile("9876543210");
-                        userRepository.save(user);
-                        status.append("Citizen 'arunkumar' created with password 'password123'. ");
-                }
-
-                return ResponseEntity.ok(status.toString());
-        }
-
-        @GetMapping("/debug-users")
-        public ResponseEntity<?> getDebugUsers() {
-                return ResponseEntity.ok(
-                                userRepository.findAll().stream().map(User::getUsername).collect(Collectors.toList()));
-        }
 }
