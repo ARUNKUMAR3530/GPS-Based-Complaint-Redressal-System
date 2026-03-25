@@ -10,6 +10,7 @@ const api = axios.create({
     },
 });
 
+// Request interceptor: attach JWT token
 api.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('token');
@@ -18,31 +19,36 @@ api.interceptors.request.use(
         }
         return config;
     },
-    (error) => {
-        return Promise.reject(error);
-    }
+    (error) => Promise.reject(error)
 );
 
+// Response interceptor: ONLY redirect on 401 for protected routes
 api.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response && error.response.status === 401) {
-            // Only redirect if it's NOT a login/register attempt
             const url = error.config?.url || '';
-            const isAuthCall = url.includes('/auth/login') || 
+
+            // Never redirect on auth calls — just let them fail normally
+            const isAuthCall = url.includes('/auth/login') ||
                                url.includes('/auth/register') ||
                                url.includes('/auth/admin');
-            
+
             if (!isAuthCall) {
-                localStorage.removeItem('token');
-                localStorage.removeItem('user');
-                const currentPath = window.location.pathname;
-                const isAdminRoute = currentPath.startsWith('/admin');
-                const loginPath = isAdminRoute 
-                    ? '/admin/login?expired=true' 
-                    : '/login?expired=true';
-                if (!currentPath.includes('/login')) {
-                    window.location.href = loginPath;
+                const token = localStorage.getItem('token');
+                // Only redirect if user WAS logged in (had a token)
+                // This prevents redirect loops on fresh page loads
+                if (token) {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    const currentPath = window.location.pathname;
+                    const isAdminRoute = currentPath.startsWith('/admin');
+                    const loginPath = isAdminRoute
+                        ? '/admin/login?expired=true'
+                        : '/login?expired=true';
+                    if (!currentPath.includes('/login')) {
+                        window.location.href = loginPath;
+                    }
                 }
             }
         }
