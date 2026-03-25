@@ -4,6 +4,7 @@ import ComplaintService from '../services/complaint.service';
 import AuthService from '../services/auth.service';
 import { Bell, Check, Clock, Reply, MessageSquare, AlertCircle } from 'lucide-react';
 import { toast } from 'react-toastify';
+import useWebSocket from '../hooks/useWebSocket';
 import './Notifications.css';
 
 const Notifications = () => {
@@ -13,26 +14,41 @@ const Notifications = () => {
     const [replyingTo, setReplyingTo] = useState(null);
     const [replyMessage, setReplyMessage] = useState('');
     const currentUser = AuthService.getCurrentUser();
-    const isUser = currentUser && currentUser.roles && currentUser.roles.includes('ROLE_USER');
+    const isAdmin = currentUser?.roles?.some(r =>
+        ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_MUNICIPALITY_ADMIN'].includes(r)
+    );
+    const isUserRole = currentUser?.roles?.includes('ROLE_USER');
+    // If it's an admin, prioritize admin view even if they have ROLE_USER
+    const effectiveIsUser = isUserRole && !isAdmin;
 
     useEffect(() => {
         fetchNotifications();
-    }, []);
+    }, [currentUser]); // Re-fetch when user object is ready/synced
+
+    // Real-time synchronization for the list
+    const topic = `/topic/${effectiveIsUser ? 'user-' : ''}notifications/${currentUser?.id}`;
+    
+    const handleNewWebSocketNotification = (newNotif) => {
+        setNotifications(prev => [newNotif, ...prev]);
+        window.dispatchEvent(new CustomEvent('notification-received'));
+    };
+
+    const socketTopic = currentUser ? topic : null;
+    useWebSocket(socketTopic, handleNewWebSocketNotification);
 
     const fetchNotifications = async () => {
+        if (!currentUser) return;
         try {
             setLoading(true);
             setError(null);
             let response;
-            if (isUser) {
+            if (effectiveIsUser) {
                 response = await NotificationService.getUserNotifications();
             } else {
                 response = await NotificationService.getNotifications();
             }
-            // Safely handle the response — could be array or {data: array}
-            const data = Array.isArray(response) ? response :
-                Array.isArray(response?.data) ? response.data : [];
-            setNotifications(data);
+            const data = response.data || response || [];
+            setNotifications(Array.isArray(data) ? data : []);
         } catch (err) {
             console.error('Error fetching notifications:', err);
             // Don't show error for 401 — the api interceptor handles redirect
@@ -47,7 +63,7 @@ const Notifications = () => {
 
     const handleMarkAsRead = async (id) => {
         try {
-            if (isUser) {
+            if (effectiveIsUser) {
                 await NotificationService.markUserNotificationAsRead(id);
             } else {
                 await NotificationService.markAsRead(id);
@@ -173,7 +189,7 @@ const Notifications = () => {
                             </div>
 
                             {/* Reply button for admin REMARK notifications */}
-                            {!isUser && notification.type === 'REMARK' && (
+                            {!effectiveIsUser && notification.type === 'REMARK' && (
                                 <div className="notification-actions">
                                     {replyingTo === notification.id ? (
                                         <div className="reply-box" onClick={(e) => e.stopPropagation()}>

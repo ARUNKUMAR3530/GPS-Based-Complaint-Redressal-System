@@ -105,7 +105,7 @@ const UserDashboard = () => {
     const loadComplaints = async () => {
         try {
             const response = await ComplaintService.getAllComplaints();
-            setComplaints(response.data);
+            setComplaints(response.data || []);
         } catch (error) {
             toast.error("Failed to load complaints");
         } finally {
@@ -186,24 +186,33 @@ const UserDashboard = () => {
                                             </div>
                                         )}
 
-                                        <div className={`status-pill status-${complaint.status.toLowerCase()}`}>
+                                        <div className={`status-pill status-${complaint.status?.toLowerCase() || 'pending'}`}>
                                             {getStatusIcon(complaint.status)}
-                                            {complaint.status.replace('_', ' ')}
+                                            {complaint.status?.replace('_', ' ') || 'PENDING'}
                                         </div>
 
                                         {(() => {
-                                            const elapsed = Date.now() - new Date(complaint.createdAt).getTime();
-                                            const remaining = Math.max(0, 7 * 60 * 1000 - elapsed);
-                                            const mins = Math.floor(remaining / 1000 / 60);
-                                            const secs = Math.floor((remaining / 1000) % 60);
-                                            return remaining > 0 ? (
-                                                <button className="delete-btn" onClick={(e) => handleDeleteComplaint(complaint.id, e)}>
-                                                    <Trash2 size={16} />
-                                                    <span style={{ fontSize: '0.72rem', fontVariantNumeric: 'tabular-nums' }}>
-                                                        {mins}:{secs.toString().padStart(2, '0')}
-                                                    </span>
-                                                </button>
-                                            ) : null;
+                                            if (!complaint.createdAt) return null;
+                                            try {
+                                                const createDate = new Date(complaint.createdAt);
+                                                if (isNaN(createDate.getTime())) return null;
+                                                
+                                                const elapsed = Date.now() - createDate.getTime();
+                                                const remaining = Math.max(0, 7 * 60 * 1000 - elapsed);
+                                                const mins = Math.floor(remaining / 1000 / 60);
+                                                const secs = Math.floor((remaining / 1000) % 60);
+                                                return remaining > 0 ? (
+                                                    <button className="delete-btn" onClick={(e) => handleDeleteComplaint(complaint.id, e)}>
+                                                        <Trash2 size={16} />
+                                                        <span style={{ fontSize: '0.72rem', fontVariantNumeric: 'tabular-nums' }}>
+                                                            {mins}:{secs.toString().padStart(2, '0')}
+                                                        </span>
+                                                    </button>
+                                                ) : null;
+                                            } catch (e) {
+                                                console.error("Timer error", e);
+                                                return null;
+                                            }
                                         })()}
                                     </div>
 

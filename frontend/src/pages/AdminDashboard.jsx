@@ -279,14 +279,14 @@ const AdminDashboard = () => {
                                         )}
                                     </td>
                                     <td>
-                                        <span className={`status-badge status-${complaint.status.toLowerCase()}`}>
-                                            {complaint.status.replace('_', ' ')}
+                                        <span className={`status-badge status-${complaint.status?.toLowerCase() || 'pending'}`}>
+                                            {complaint.status?.replace('_', ' ') || 'PENDING'}
                                         </span>
                                     </td>
                                     <td>
                                         <select
                                             className="action-select"
-                                            value={complaint.status}
+                                            value={complaint.status || 'PENDING'}
                                             onChange={(e) => handleUpdateStatus(complaint.id, e.target.value)}
                                         >
                                             <option value="PENDING">Pending</option>

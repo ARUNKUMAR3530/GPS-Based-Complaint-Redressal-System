@@ -2,11 +2,9 @@ import { useEffect, useRef } from 'react';
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import AuthService from '../services/auth.service';
+import { BASE_URL } from '../services/api';
 
-// Use a relative URL for the WebSocket. This allows it to work seamlessly in
-// development (with a proxy) and in production without hardcoding hostnames.
-// The backend WebSocket endpoint should be configured to be available at '/ws'.
-const WS_URL = '/ws';
+const WS_URL = `${BASE_URL}/ws`;
 
 const useWebSocket = (topic, onMessageReceived) => {
     // Use a ref so that changing callbacks don't re-trigger the effect
