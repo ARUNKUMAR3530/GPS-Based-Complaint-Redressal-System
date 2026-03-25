@@ -24,8 +24,10 @@ const Header = () => {
             const res = isAdmin
                 ? await NotificationService.getNotifications()
                 : await NotificationService.getUserNotifications();
-            setNotifications(res.data);
-            setUnreadCount(res.data.filter(n => !n.isRead).length);
+            
+            const data = Array.isArray(res.data) ? res.data : [];
+            setNotifications(data);
+            setUnreadCount(data.filter(n => !n.isRead).length);
         } catch (error) {
             console.error(error);
         }

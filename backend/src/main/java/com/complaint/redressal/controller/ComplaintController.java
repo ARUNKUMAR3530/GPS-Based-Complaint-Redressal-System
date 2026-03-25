@@ -55,14 +55,16 @@ public class ComplaintController {
                 return ResponseEntity.ok(complaint);
         }
 
-        @GetMapping("/complaints/my")
-        @PreAuthorize("hasRole('USER')")
-        public List<Complaint> getMyComplaints(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-                User user = userRepository.findById(userDetails.getId())
-                                .orElseThrow(() -> new RuntimeException("User not found"));
+    @GetMapping("/complaints/my")
+    @PreAuthorize("hasRole('USER')")
+    public List<ComplaintDTO> getMyComplaints(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        User user = userRepository.findById(userDetails.getId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-                return complaintService.getComplaintsByUser(user);
-        }
+        return complaintService.getComplaintsByUser(user).stream()
+                .map(c -> ComplaintDTO.fromEntity(c, false)) // false = don't mask own data
+                .collect(java.util.stream.Collectors.toList());
+    }
 
         @DeleteMapping("/complaints/{id}")
         @PreAuthorize("hasRole('USER')")
