@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../services/api';
 import { toast } from 'react-toastify';
 import { User, Lock, KeyRound, ArrowLeft, Loader2, CheckCircle2 } from 'lucide-react';
 import './ForgotPassword.css';
@@ -18,7 +18,7 @@ const ForgotPassword = () => {
         e.preventDefault();
         setLoading(true);
         try {
-            const response = await axios.post('http://localhost:8080/api/auth/forgot-password', { identifier });
+            const response = await api.post('/auth/forgot-password', { identifier });
             toast.success(response.data.message);
             setStep(2);
         } catch (error) {
@@ -36,7 +36,7 @@ const ForgotPassword = () => {
         }
         setLoading(true);
         try {
-            const response = await axios.post('http://localhost:8080/api/auth/reset-password', {
+            const response = await api.post('/auth/reset-password', {
                 identifier,
                 otpCode: otp,
                 newPassword
