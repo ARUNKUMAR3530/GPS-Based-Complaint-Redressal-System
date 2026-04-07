@@ -12,7 +12,6 @@ import Register from './pages/Register';
 import Home from './pages/Home';
 import UserDashboard from './pages/UserDashboard';
 import LodgeComplaint from './pages/LodgeComplaint';
-import ForgotPassword from './pages/ForgotPassword';
 import AdminDashboard from './pages/AdminDashboard';
 import Supervision from './pages/Supervision';
 import UserManagement from './pages/UserManagement';
@@ -40,7 +39,6 @@ function App() {
                     <Route path="/" element={<UserLayout><Home /></UserLayout>} />
                     <Route path="/login" element={<UserLayout><UnifiedLogin /></UserLayout>} />
                     <Route path="/register" element={<UserLayout><Register /></UserLayout>} />
-                    <Route path="/forgot-password" element={<UserLayout><ForgotPassword /></UserLayout>} />
                     <Route path="/admin/login" element={<UserLayout><UnifiedLogin /></UserLayout>} />
 
                     {/* User Routes */}

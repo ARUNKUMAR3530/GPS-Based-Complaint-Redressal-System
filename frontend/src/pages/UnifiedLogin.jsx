@@ -96,10 +96,6 @@ const UnifiedLogin = () => {
                         </div>
                     </div>
 
-                    <div style={{ textAlign: 'right', marginBottom: '1rem', marginTop: '-0.5rem' }}>
-                        <a href="/forgot-password" style={{ color: '#60a5fa', fontSize: '0.85rem', textDecoration: 'none' }}>Forgot Password?</a>
-                    </div>
-
                     <button type="submit" className="login-btn" disabled={loading}>
                         {loading ? <Loader2 className="animate-spin inline mr-2" size={20} /> : null}
                         {isLoginAsAdmin ? 'Access Dashboard' : 'Secure Login'}
