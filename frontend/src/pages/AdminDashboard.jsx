@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import ComplaintService from '../services/complaint.service';
@@ -50,6 +51,19 @@ const AdminDashboard = () => {
     const [selectedDescription, setSelectedDescription] = useState(null);
 
     const currentUser = AuthService.getCurrentUser();
+    const location = useLocation();
+
+    useEffect(() => {
+        if (location.pathname === '/admin/complaints') {
+            const element = document.getElementById('complaints-section');
+            if (element) {
+                // Add a small delay to ensure the DOM is ready and page layout is stable
+                setTimeout(() => {
+                    element.scrollIntoView({ behavior: 'smooth' });
+                }, 100);
+            }
+        }
+    }, [location.pathname]);
 
     useEffect(() => {
         loadComplaints();
@@ -203,6 +217,7 @@ const AdminDashboard = () => {
             </div>
 
             {/* Complaints Table */}
+            <h2 id="complaints-section" className="section-title">Complaints</h2>
             <div className="table-container">
                 <table className="admin-table">
                     <thead>
