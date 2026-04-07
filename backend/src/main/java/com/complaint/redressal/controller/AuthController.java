@@ -7,6 +7,7 @@ import com.complaint.redressal.repository.DepartmentRepository;
 import com.complaint.redressal.repository.UserRepository;
 import com.complaint.redressal.security.jwt.JwtUtils;
 import com.complaint.redressal.security.services.UserDetailsImpl;
+import com.complaint.redressal.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -41,6 +42,9 @@ public class AuthController {
 
         @Autowired
         JwtUtils jwtUtils;
+
+        @Autowired
+        AuthService authService;
 
         @PostMapping("/login")
         public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -157,6 +161,36 @@ public class AuthController {
                                         .orElse(ResponseEntity.badRequest()
                                                         .body(new MessageResponse("Error: User not found!")));
                 }
+        }
+
+        @PostMapping("/forgot-password")
+        public ResponseEntity<?> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+                if (!authService.identifierExists(request.getIdentifier())) {
+                        return ResponseEntity.badRequest()
+                                        .body(new MessageResponse("Error: User with this identifier not found!"));
+                }
+                authService.generateAndSendOtp(request.getIdentifier());
+                return ResponseEntity.ok(new MessageResponse("OTP sent successfully to " + request.getIdentifier()));
+        }
+
+        @PostMapping("/verify-otp")
+        public ResponseEntity<?> verifyOtp(@Valid @RequestBody ResetPasswordRequest request) {
+                if (authService.verifyOtp(request.getIdentifier(), request.getOtpCode())) {
+                        return ResponseEntity.ok(new MessageResponse("OTP verified successfully!"));
+                }
+                return ResponseEntity.badRequest().body(new MessageResponse("Error: Invalid or expired OTP!"));
+        }
+
+        @PostMapping("/reset-password")
+        public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+                if (!authService.verifyOtp(request.getIdentifier(), request.getOtpCode())) {
+                        return ResponseEntity.badRequest().body(new MessageResponse("Error: Invalid or expired OTP!"));
+                }
+
+                if (authService.resetPassword(request.getIdentifier(), request.getNewPassword())) {
+                        return ResponseEntity.ok(new MessageResponse("Password reset successfully!"));
+                }
+                return ResponseEntity.badRequest().body(new MessageResponse("Error: Password reset failed!"));
         }
 
 }

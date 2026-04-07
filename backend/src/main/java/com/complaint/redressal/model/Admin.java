@@ -7,7 +7,9 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "admins", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "username")
+        @UniqueConstraint(columnNames = "username"),
+        @UniqueConstraint(columnNames = "email"),
+        @UniqueConstraint(columnNames = "mobile")
 })
 @Data
 @NoArgsConstructor
@@ -21,6 +23,10 @@ public class Admin {
 
     @NotBlank
     private String password;
+
+    private String email;
+
+    private String mobile;
 
     @Column(columnDefinition = "boolean default false")
     private boolean isPasswordChanged = false;

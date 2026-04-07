@@ -19,6 +19,7 @@ import ComplaintDetailsAdmin from './pages/ComplaintDetailsAdmin';
 import ChangePassword from './pages/ChangePassword';
 import Notifications from './pages/Notifications';
 import SuperAdminAnalytics from './pages/SuperAdminAnalytics';
+import ForgotPassword from './pages/ForgotPassword';
 
 // Layout for User pages (Navbar + Container)
 const UserLayout = ({ children }) => (
@@ -40,6 +41,7 @@ function App() {
                     <Route path="/login" element={<UserLayout><UnifiedLogin /></UserLayout>} />
                     <Route path="/register" element={<UserLayout><Register /></UserLayout>} />
                     <Route path="/admin/login" element={<UserLayout><UnifiedLogin /></UserLayout>} />
+                    <Route path="/forgot-password" element={<UserLayout><ForgotPassword /></UserLayout>} />
 
                     {/* User Routes */}
                     <Route element={<ProtectedRoute />}>

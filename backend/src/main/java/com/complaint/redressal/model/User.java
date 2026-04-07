@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "users", uniqueConstraints = {
     @UniqueConstraint(columnNames = "username"),
-    @UniqueConstraint(columnNames = "email")
+    @UniqueConstraint(columnNames = "email"),
+    @UniqueConstraint(columnNames = "mobile")
 })
 @Data
 @NoArgsConstructor

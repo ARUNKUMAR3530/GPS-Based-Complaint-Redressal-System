@@ -100,6 +100,12 @@ const UnifiedLogin = () => {
                         {loading ? <Loader2 className="animate-spin inline mr-2" size={20} /> : null}
                         {isLoginAsAdmin ? 'Access Dashboard' : 'Secure Login'}
                     </button>
+
+                    <div style={{ textAlign: 'center', marginTop: '1rem' }}>
+                        <a href="/forgot-password" style={{ color: '#60a5fa', textDecoration: 'none', fontSize: '0.85rem' }}>
+                            Forgot Password?
+                        </a>
+                    </div>
                 </form>
 
                 {!isLoginAsAdmin && (
